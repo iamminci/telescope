@@ -17,10 +17,6 @@ function MyApp({ Component, pageProps }: AppProps) {
   return (
     <ChakraProvider theme={theme}>
       <Component {...pageProps} />
-      <Box className="backgroundContainer">
-        <Box className="ellipseOne"></Box>
-        <Box className="ellipseTwo"></Box>
-      </Box>
     </ChakraProvider>
   );
 }

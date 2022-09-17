@@ -1,5 +1,11 @@
 .container {
-  padding: 0 2rem;
+  margin: 0;
+  width: 100vw;
+  height: 100vh;
+  box-sizing: border-box;
+  background: url("/noise.png"), #1a1b18;
+  overflow: hidden;
+  position: relative;
 }
 
 .main {
@@ -12,98 +18,110 @@
   align-items: center;
 }
 
-.footer {
-  display: flex;
-  flex: 1;
-  padding: 2rem 0;
-  border-top: 1px solid #eaeaea;
+.ellipseOne {
+  position: absolute;
+  width: 1005px;
+  height: 1005px;
+  left: -359px;
+  top: 358px;
+
+  background: radial-gradient(
+    50% 50% at 50% 50%,
+    #594636 0%,
+    rgba(89, 70, 54, 0) 100%
+  );
+  opacity: 0.25;
+  z-index: 0;
+}
+
+.ellipseTwo {
+  position: absolute;
+  width: 1005px;
+  height: 1005px;
+  left: 817px;
+  top: -347px;
+
+  background: radial-gradient(
+    50% 50% at 50% 50%,
+    #262825 0%,
+    rgba(38, 40, 37, 0) 100%
+  );
+  opacity: 0.6;
+  z-index: 0;
+}
+
+.titleContainer {
+  height: 100%;
   justify-content: center;
-  align-items: center;
-}
-
-.footer a {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-grow: 1;
-}
-
-.title a {
-  color: #0070f3;
-  text-decoration: none;
-}
-
-.title a:hover,
-.title a:focus,
-.title a:active {
-  text-decoration: underline;
+  position: relative;
+  z-index: 10;
 }
 
 .title {
-  margin: 0;
-  line-height: 1.15;
-  font-size: 4rem;
+  font-family: "Audiowide";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 84px;
+  line-height: 84px;
+
+  color: #ffffff;
+
+  text-shadow: 0px 0px 20px rgba(255, 255, 255, 0.75);
 }
 
-.title,
-.description {
-  text-align: center;
+.subtitle {
+  font-style: normal;
+  font-weight: 400;
+  font-size: 20px;
+  line-height: 30px;
+  color: #ffffff;
+  text-shadow: 0px 0px 20px rgba(255, 255, 255, 0.75);
+  padding-bottom: 2rem;
 }
 
-.description {
-  margin: 4rem 0;
-  line-height: 1.5;
-  font-size: 1.5rem;
+.searchbar {
+  box-sizing: border-box;
+  width: 80%;
+  height: 61px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 20px;
+  padding: 0 1.5rem;
 }
 
-.code {
-  background: #fafafa;
-  border-radius: 5px;
-  padding: 0.75rem;
-  font-size: 1.1rem;
-  font-family: Menlo, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono,
-    Bitstream Vera Sans Mono, Courier New, monospace;
+.searchInput {
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  background: transparent !important;
+  border: none !important;
+  color: #ffffff !important;
+  font-size: 24px;
+  line-height: 30px;
+  padding: 0 20px;
 }
 
-.grid {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-wrap: wrap;
-  max-width: 800px;
+.searchInput:focus {
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
 }
 
-.card {
-  margin: 1rem;
-  padding: 1.5rem;
-  text-align: left;
-  color: inherit;
-  text-decoration: none;
-  border: 1px solid #eaeaea;
-  border-radius: 10px;
-  transition: color 0.15s ease, border-color 0.15s ease;
-  max-width: 300px;
+.searchInput:focus-visible {
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
 }
 
-.card:hover,
-.card:focus,
-.card:active {
-  color: #0070f3;
-  border-color: #0070f3;
-}
+.graphViewLabel {
+  width: 6rem;
 
-.card h2 {
-  margin: 0 0 1rem 0;
-  font-size: 1.5rem;
-}
+  font-family: "Bai Jamjuree";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 25px;
 
-.card p {
-  margin: 0;
-  font-size: 1.25rem;
-  line-height: 1.5;
-}
-
-.logo {
-  height: 1em;
-  margin-left: 0.5rem;
+  color: #ffffff;
+  opacity: 0.7;
 }
