@@ -96,7 +96,7 @@ function Address() {
                 </HStack>
               </HStack>
               <TableContainer>
-                <Table variant="simple">
+                <Table variant="unstyled">
                   <Thead>
                     <Tr className={styles.transactionHeaderContainer}>
                       <Th></Th>
