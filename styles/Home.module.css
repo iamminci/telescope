@@ -154,4 +154,11 @@
 .isGraphView {
   box-shadow: 0px 0px 10px #da8e5c !important;
   border-radius: 40px;
+  border: none !important;
+  outline: none !important;
+}
+
+.isNotGraphView {
+  border: none !important;
+  outline: none !important;
 }

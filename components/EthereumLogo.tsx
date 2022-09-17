@@ -29,7 +29,7 @@ function EthereumLogo() {
         className={styles.ethereumLogo}
         as={motion.div}
         animation={animation}
-        bgImage="/eth.png"
+        bgImage="/hero.png"
       />
     </Box>
   );

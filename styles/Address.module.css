@@ -21,6 +21,7 @@
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 20px;
+  z-index: 10;
 }
 
 .ellipseOne {
@@ -53,4 +54,155 @@
   );
   opacity: 0.6;
   z-index: 0;
+}
+
+.ellipseThree {
+  position: absolute;
+  width: 1207px;
+  height: 1207px;
+  left: -500px;
+  top: 0px;
+
+  background: radial-gradient(
+    50% 50% at 50% 50%,
+    rgba(214, 144, 101, 0.2) 0%,
+    rgba(226, 189, 160, 0) 100%
+  );
+}
+
+.header {
+  font-family: "Bai Jamjuree";
+  font-style: normal;
+  font-weight: 700;
+  font-size: 28px;
+  line-height: 35px;
+}
+
+.address {
+  font-style: normal;
+  font-weight: 400;
+  font-size: 24px;
+  line-height: 30px;
+}
+
+.titleContainer {
+  width: 100%;
+  justify-content: flex-start;
+  padding: 1rem 2rem;
+}
+
+.titleDivider {
+  margin-top: 0 !important;
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    rgba(255, 255, 255, 0),
+    rgba(255, 255, 255, 0.2),
+    rgba(255, 255, 255, 0.2),
+    rgba(255, 255, 255, 0)
+  ) !important;
+}
+
+.fiatBalance {
+  font-style: normal;
+  font-weight: 400;
+  font-size: 36px;
+  line-height: 45px;
+}
+
+.ethBalance {
+  font-style: normal;
+  font-weight: 400;
+  font-size: 20px;
+  line-height: 25px;
+}
+
+.overviewContainer {
+  width: 30%;
+  height: 100%;
+  padding: 1rem 2rem;
+}
+
+.overviewHeaderContainer {
+  width: 100%;
+  align-items: flex-start !important;
+}
+
+.transactionContainer {
+  width: 70%;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+  margin: 0 !important;
+}
+
+.transactionContentContainer {
+  width: 100%;
+  height: 100%;
+  padding: 1rem 2rem;
+  z-index: 10;
+}
+
+.transactionTitleContainer {
+  width: 100%;
+  justify-content: space-between;
+}
+
+.transactionHeaderContainer {
+  width: 100%;
+  color: white !important;
+}
+
+.transactionHeaderLabel {
+  font-weight: 700;
+  font-size: 20px;
+  line-height: 25px;
+  color: white !important;
+}
+
+.isSwitchOn {
+  box-shadow: 0px 0px 10px #da8e5c !important;
+  border-radius: 40px;
+  border: none !important;
+  outline: none !important;
+}
+
+.isSwitchOff {
+  border: none !important;
+  outline: none !important;
+}
+
+.contentDivider {
+  margin: 0 !important;
+  height: 100%;
+  width: 1px;
+  background: linear-gradient(
+    to top,
+    rgba(214, 144, 101, 1),
+    rgba(126, 85, 59, 0.5885),
+    rgba(255, 255, 255, 0)
+  ) !important;
+  box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.25);
+}
+
+.tokenContainer {
+  width: 100%;
+  height: 200px;
+  overflow-y: scroll;
+}
+
+.tokenRowContainer {
+  width: 80%;
+  justify-content: space-between !important;
+  align-items: space-between !important;
+  padding: 0.5rem;
+}
+
+.tokenLogo {
+  width: 48px;
+  height: 48px;
+
+  opacity: 0.4;
+  filter: drop-shadow(0px 0px 6px rgba(255, 255, 255, 0.75));
 }
