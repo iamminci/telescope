@@ -10,8 +10,10 @@ import {
 } from "@chakra-ui/react";
 import type { NextPage } from "next";
 import Head from "next/head";
-import styles from "../styles/Home.module.css";
+import styles from "@styles/Home.module.css";
 import { motion } from "framer-motion";
+import withTransition from "@components/withTransition";
+import { useState } from "react";
 
 const animationKeyframes = keyframes`
 0% {
@@ -34,6 +36,8 @@ const animationKeyframes = keyframes`
 const animation = `${animationKeyframes} 30s normal linear infinite`;
 
 const Home: NextPage = () => {
+  const [isGraphView, setIsGraphView] = useState(false);
+
   return (
     <div className={styles.container}>
       <Head>
@@ -53,8 +57,12 @@ const Home: NextPage = () => {
           <HStack className={styles.switchContainer}>
             <Switch
               colorScheme="orange"
-              onChange={() => {}}
-              className={styles.forceSwitch}
+              onChange={() => {
+                setIsGraphView(!isGraphView);
+              }}
+              className={
+                isGraphView ? styles.isGraphView : styles.isNotGraphView
+              }
             />
             <Text className={styles.graphViewLabel}>Graph View</Text>
           </HStack>
@@ -74,4 +82,4 @@ const Home: NextPage = () => {
   );
 };
 
-export default Home;
+export default withTransition(Home);

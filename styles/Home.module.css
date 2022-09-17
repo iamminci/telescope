@@ -3,7 +3,7 @@
   width: 100vw;
   height: 100vh;
   box-sizing: border-box;
-  background: url("/noise.png"), #1a1b18;
+  background: url("/noise.png"), #1a1b18 !important;
   overflow: hidden;
   position: relative;
 }
@@ -63,9 +63,7 @@
   font-weight: 400;
   font-size: 84px;
   line-height: 84px;
-
   color: #ffffff;
-
   text-shadow: 0px 0px 20px rgba(255, 255, 255, 0.75);
 }
 
@@ -140,4 +138,9 @@
   height: 1410px;
   left: 521px;
   top: 156px;
+}
+
+.isGraphView {
+  box-shadow: 0px 0px 10px #da8e5c !important;
+  border-radius: 40px;
 }
