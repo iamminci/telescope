@@ -7,6 +7,7 @@ const theme = extendTheme({
     global: (props: any) => ({
       body: {
         fontFamily: "Bai Jamjuree",
+        color: "white",
         lineHeight: "base",
       },
     }),

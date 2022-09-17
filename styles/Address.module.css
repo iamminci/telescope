@@ -1,0 +1,56 @@
+.container {
+  margin: 0;
+  width: 100vw;
+  height: 100vh;
+  box-sizing: border-box;
+  background: url("/noise.png"), #1a1b18 !important;
+  overflow: hidden;
+  position: relative;
+  padding-top: 4.5rem;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.contentContainer {
+  box-sizing: border-box;
+
+  width: 1436px;
+  height: 750px;
+
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 20px;
+}
+
+.ellipseOne {
+  position: absolute;
+  width: 1005px;
+  height: 1005px;
+  left: -359px;
+  top: 358px;
+
+  background: radial-gradient(
+    50% 50% at 50% 50%,
+    #594636 0%,
+    rgba(89, 70, 54, 0) 100%
+  );
+  opacity: 0.25;
+  z-index: 0;
+}
+
+.ellipseTwo {
+  position: absolute;
+  width: 1005px;
+  height: 1005px;
+  left: 817px;
+  top: -347px;
+
+  background: radial-gradient(
+    50% 50% at 50% 50%,
+    #262825 0%,
+    rgba(38, 40, 37, 0) 100%
+  );
+  opacity: 0.6;
+  z-index: 0;
+}
