@@ -23,11 +23,11 @@ import PieChart from "@components/PieChart";
 import { useState } from "react";
 
 const dummyData = [
-  { date: "Sep 14, 2022", count: 2 },
-  { date: "Sep 13, 2022", count: 3 },
-  { date: "Sep 10, 2022", count: 1 },
-  { date: "Sep 9, 2022", count: 4 },
-  { date: "Sep 7, 2022", count: 1 },
+  { date: "Sep 14, 2022", txns: [0, 1, 2, 3, 4, 5] },
+  { date: "Sep 13, 2022", txns: [0] },
+  { date: "Sep 10, 2022", txns: [0, 1, 2] },
+  { date: "Sep 9, 2022", txns: [0, 1] },
+  { date: "Sep 7, 2022", txns: [0, 1, 2, 3] },
 ];
 
 function Address() {
@@ -48,7 +48,7 @@ function Address() {
           </Text>
         </HStack>
         <Box className={styles.titleDivider} />
-        <HStack w="100%">
+        <HStack w="100%" h="100%">
           <VStack className={styles.overviewContainer}>
             <VStack className={styles.overviewHeaderContainer}>
               <Text className={styles.header}>Total Balance</Text>
@@ -95,81 +95,56 @@ function Address() {
                   <Text>Show Zero Value Transactions</Text>
                 </HStack>
               </HStack>
-              <TableContainer>
-                <Table variant="unstyled">
-                  <Thead>
-                    <Tr className={styles.transactionHeaderContainer}>
-                      <Th></Th>
-                      <Th className={styles.transactionHeaderLabel}>Time</Th>
-                      <Th className={styles.transactionHeaderLabel}>Address</Th>
-                      <Th className={styles.transactionHeaderLabel}>Method</Th>
-                      <Th className={styles.transactionHeaderLabel}>Value</Th>
-                      <Th className={styles.transactionHeaderLabel}>Status</Th>
-                      <Th className={styles.transactionHeaderLabel}>Type</Th>
-                    </Tr>
-                  </Thead>
-                  <Tbody>
-                    {/* {dummyData.map(({ date, count }, idx) => (
-                      <HStack key={idx}>
-                        <Text>{date}</Text>
-                        <VStack> */}
-                    {new Array(10).fill(0).map((_, idx) => (
-                      //   <HStack key={`hi-${idx}`}>
-                      //     <Text>17:59:22 UTC</Text>
-                      //     <Text>Uniswap</Text>
-                      //     <Text>DepositForEther</Text>
-                      //     <Text>-0.05 ETH</Text>
-                      //     <Text>Pending</Text>
-                      //     <Text>Ether</Text>
-                      //   </HStack>
-                      <Tr key={`hi-${idx}`}>
-                        <Td>Sep 14, 2022</Td>
-                        <Td>17:59:22 UTC</Td>
-                        <Td>Uniswap</Td>
-                        <Td>DepositForEther</Td>
-                        <Td>-0.05 ETH</Td>
-                        <Td>Pending</Td>
-                        <Td>Ether</Td>
+              <Box className={styles.tableContainer}>
+                <TableContainer>
+                  <Table variant="unstyled">
+                    <Thead>
+                      <Tr className={styles.transactionHeaderContainer}>
+                        <Th></Th>
+                        <Th className={styles.transactionHeaderLabel}>Time</Th>
+                        <Th className={styles.transactionHeaderLabel}>
+                          Address
+                        </Th>
+                        <Th className={styles.transactionHeaderLabel}>
+                          Method
+                        </Th>
+                        <Th className={styles.transactionHeaderLabel}>Value</Th>
+                        <Th className={styles.transactionHeaderLabel}>
+                          Status
+                        </Th>
+                        <Th className={styles.transactionHeaderLabel}>Type</Th>
                       </Tr>
-                    ))}
-                    {/* </VStack>
-                      </HStack>
-                    ))} */}
-                    {/* <Tr>
-                      <Td>inches</Td>
-                      <Td>millimetres (mm)</Td>
-                      <Td isNumeric>25.4</Td>
-                    </Tr>
-                    <Tr>
-                      <Td>feet</Td>
-                      <Td>centimetres (cm)</Td>
-                      <Td isNumeric>30.48</Td>
-                    </Tr>
-                    <Tr>
-                      <Td>yards</Td>
-                      <Td>metres (m)</Td>
-                      <Td isNumeric>0.91444</Td>
-                    </Tr>*/}
-                  </Tbody>
-                </Table>
-              </TableContainer>
-              {/* {dummyData.map(({ date, count }, idx) => (
-                <HStack key={idx}>
-                  <Text>{date}</Text>
-                  <VStack>
-                    {new Array(count).fill(0).map((_, idx) => (
-                      <HStack key={`hi-${idx}`}>
-                        <Text>17:59:22 UTC</Text>
-                        <Text>Uniswap</Text>
-                        <Text>DepositForEther</Text>
-                        <Text>-0.05 ETH</Text>
-                        <Text>Pending</Text>
-                        <Text>Ether</Text>
-                      </HStack>
-                    ))}
-                  </VStack>
-                </HStack>
-              ))} */}
+                    </Thead>
+                    <Tbody>
+                      {dummyData.map(({ date, txns }) =>
+                        txns.map((_, idx) =>
+                          idx === 0 ? (
+                            <Tr key={Math.random() * idx}>
+                              <Td>{date}</Td>
+                              <Td>17:59:22 UTC</Td>
+                              <Td>Uniswap</Td>
+                              <Td>DepositForEther</Td>
+                              <Td>-0.05 ETH</Td>
+                              <Td>Pending</Td>
+                              <Td>Ether</Td>
+                            </Tr>
+                          ) : (
+                            <Tr>
+                              <Td></Td>
+                              <Td>17:59:22 UTC</Td>
+                              <Td>Uniswap</Td>
+                              <Td>DepositForEther</Td>
+                              <Td>-0.05 ETH</Td>
+                              <Td>Pending</Td>
+                              <Td>Ether</Td>
+                            </Tr>
+                          )
+                        )
+                      )}
+                    </Tbody>
+                  </Table>
+                </TableContainer>
+              </Box>
             </VStack>
             <Box className={styles.ellipseThree}></Box>
           </VStack>
