@@ -1,8 +1,37 @@
 import { Search2Icon } from "@chakra-ui/icons";
-import { Box, VStack, Text, HStack, Input, Switch } from "@chakra-ui/react";
+import {
+  Box,
+  VStack,
+  Text,
+  HStack,
+  Input,
+  Switch,
+  keyframes,
+} from "@chakra-ui/react";
 import type { NextPage } from "next";
 import Head from "next/head";
 import styles from "../styles/Home.module.css";
+import { motion } from "framer-motion";
+
+const animationKeyframes = keyframes`
+0% {
+    transform: rotate3d(0, 0, 1, 0deg);
+  }
+  25% {
+    transform: rotate3d(0, 0, 1, 90deg);
+  }
+  50% {
+    transform: rotate3d(0, 0, 1, 180deg);
+  }
+  75% {
+    transform: rotate3d(0, 0, 1, 270deg);
+  }
+  100% {
+    transform: rotate3d(0, 0, 1, 360deg);
+  }
+`;
+
+const animation = `${animationKeyframes} 30s normal linear infinite`;
 
 const Home: NextPage = () => {
   return (
@@ -33,6 +62,14 @@ const Home: NextPage = () => {
       </VStack>
       <Box className={styles.ellipseOne}></Box>
       <Box className={styles.ellipseTwo}></Box>
+      <Box className={styles.ethereumLogoContainer}>
+        <Box
+          className={styles.ethereumLogo}
+          as={motion.div}
+          animation={animation}
+          bgImage="/eth.png"
+        />
+      </Box>
     </div>
   );
 };
