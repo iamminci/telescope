@@ -1,20 +1,4 @@
-import {
-  Box,
-  VStack,
-  Text,
-  Image,
-  HStack,
-  Switch,
-  Table,
-  Thead,
-  Tbody,
-  Tfoot,
-  Tr,
-  Th,
-  Td,
-  TableCaption,
-  TableContainer,
-} from "@chakra-ui/react";
+import { Box, VStack, Text, Image, HStack } from "@chakra-ui/react";
 import EthereumLogo from "@components/EthereumLogo";
 import Navbar from "@components/Navbar";
 import withTransition from "@components/withTransition";
@@ -22,15 +6,11 @@ import styles from "@styles/Transaction.module.css";
 import PieChart from "@components/PieChart";
 import { useState } from "react";
 
-const dummyData = [
-  { date: "Sep 14, 2022", count: 2 },
-  { date: "Sep 13, 2022", count: 3 },
-  { date: "Sep 10, 2022", count: 1 },
-  { date: "Sep 9, 2022", count: 4 },
-  { date: "Sep 7, 2022", count: 1 },
-];
+type TransactionProps = {
+  transaction: any;
+};
 
-function Address() {
+function Transaction({ transaction }: TransactionProps) {
   const [showZeroValueTxns, setShowZeroValueTxns] = useState(false);
 
   function handleSwitchChange() {
@@ -43,9 +23,7 @@ function Address() {
       <VStack className={styles.contentContainer}>
         <HStack className={styles.titleContainer}>
           <Text className={styles.header}>Transaction</Text>
-          <Text className={styles.address}>
-            0x29e6b5173a1009f8213ac5238f749a8e8a898b752d9221e6543342898caeadfb
-          </Text>
+          <Text className={styles.address}>{transaction.hash}</Text>
         </HStack>
         <Box className={styles.titleDivider} />
         <VStack w="100%" h="100%" margin="0 !important">
@@ -111,11 +89,11 @@ function Address() {
                     </Text>
                   </HStack>
                   {/* <HStack>
-                    <Text className={styles.detailHeader}>Txn Hash</Text>
-                    <Text className={styles.detailValue}>
-                      0x29e6b5173a1009f8213ac5238f749a8e8a898b752d9221e6543342898caeadfb
-                    </Text>
-                  </HStack> */}
+                      <Text className={styles.detailHeader}>Txn Hash</Text>
+                      <Text className={styles.detailValue}>
+                        0x29e6b5173a1009f8213ac5238f749a8e8a898b752d9221e6543342898caeadfb
+                      </Text>
+                    </HStack> */}
                   <HStack>
                     <Text className={styles.detailHeader}>Txn Fee</Text>
                     <Text className={styles.detailValue}>
@@ -173,4 +151,4 @@ function Address() {
   );
 }
 
-export default withTransition(Address);
+export default withTransition(Transaction);

@@ -1,0 +1,38 @@
+{
+  "nodes": [
+    { "id": "0", "name": "0xa109", "group": 1, "value": 5 },
+    {
+      "id": "1",
+      "name": "Uniswap",
+      "group": 2,
+      "value": 6,
+      "code": "#FF3580",
+      "imgSrc": "/uniswap.png"
+    },
+    {
+      "id": "2",
+      "name": "Coinbase",
+      "group": 3,
+      "value": 10,
+      "code": "#0052FF",
+      "imgSrc": "/coinbase.png"
+    },
+    {
+      "id": "3",
+      "name": "Binance",
+      "group": 4,
+      "value": 6,
+      "code": "#F3BA2F",
+      "imgSrc": "/binance.png"
+    },
+    { "id": "4", "name": "0xba", "group": 5, "value": 3 },
+    { "id": "5", "name": "0xeeb", "group": 6, "value": 4 }
+  ],
+  "links": [
+    { "source": "0", "target": "1", "value": 1 },
+    { "source": "0", "target": "2", "value": 2 },
+    { "source": "0", "target": "3", "value": 3 },
+    { "source": "0", "target": "4", "value": 1 },
+    { "source": "0", "target": "5", "value": 2 }
+  ]
+}

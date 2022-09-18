@@ -213,3 +213,12 @@
   overflow-y: scroll;
   max-height: "300px";
 }
+
+.transactionRowContainer {
+  transition: 0.2s ease-in-out;
+  cursor: pointer;
+}
+
+.transactionRowContainer:hover {
+  background: rgba(255, 255, 255, 0.1);
+}

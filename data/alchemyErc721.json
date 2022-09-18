@@ -1,0 +1,71 @@
+{
+  "jsonrpc": "2.0",
+  "id": 0,
+  "result": {
+    "transfers": [
+      {
+        "blockNum": "0xed5ae5",
+        "uniqueId": "0xaed955b8487a19ce3094c5f47f8ab5b92c764e42fd685e53db00dcc13e0a2635:log:273",
+        "hash": "0xaed955b8487a19ce3094c5f47f8ab5b92c764e42fd685e53db00dcc13e0a2635",
+        "from": "0xa109bc6f8292b52a6f89e8fc5eabf2947ec31bfa",
+        "to": "0xd1928e47fa818e5848c9a12fc98c3a15d4066522",
+        "value": null,
+        "erc721TokenId": "0x0000000000000000000000000000000000000000000000000000000000002f4f",
+        "erc1155Metadata": null,
+        "tokenId": "0x0000000000000000000000000000000000000000000000000000000000002f4f",
+        "asset": "RTS",
+        "category": "erc721",
+        "rawContract": {
+          "value": null,
+          "address": "0x39508183ced59522f072293af4e485a1b9fc102b",
+          "decimal": null
+        },
+        "metadata": {
+          "blockTimestamp": "2022-09-17T19:11:35.000Z"
+        }
+      },
+      {
+        "blockNum": "0xed5a8a",
+        "uniqueId": "0x1676d8c864ab7c4eb9aa26244794afeefa8ed65dc07f2d93f6c7826143372e74:log:440",
+        "hash": "0x1676d8c864ab7c4eb9aa26244794afeefa8ed65dc07f2d93f6c7826143372e74",
+        "from": "0xa109bc6f8292b52a6f89e8fc5eabf2947ec31bfa",
+        "to": "0x000000000000000000000000000000000000dead",
+        "value": null,
+        "erc721TokenId": "0x00000000000000000000000000000000000000000000000000000000000006c6",
+        "erc1155Metadata": null,
+        "tokenId": "0x00000000000000000000000000000000000000000000000000000000000006c6",
+        "asset": "TMGG",
+        "category": "erc721",
+        "rawContract": {
+          "value": null,
+          "address": "0x2841413795bbe4e42c1a8558b3e55ecde4a12014",
+          "decimal": null
+        },
+        "metadata": {
+          "blockTimestamp": "2022-09-17T18:53:11.000Z"
+        }
+      },
+      {
+        "blockNum": "0xed5a75",
+        "uniqueId": "0x36ad2006dadad31b4059f4af4463dc9406394b60c722582f90ddcd00fcd83652:log:148",
+        "hash": "0x36ad2006dadad31b4059f4af4463dc9406394b60c722582f90ddcd00fcd83652",
+        "from": "0xa109bc6f8292b52a6f89e8fc5eabf2947ec31bfa",
+        "to": "0xcd285daae7f8b5c782fc82a7a8dc458b9a716ead",
+        "value": null,
+        "erc721TokenId": "0x000000000000000000000000000000000000000000000000000000000000067f",
+        "erc1155Metadata": null,
+        "tokenId": "0x000000000000000000000000000000000000000000000000000000000000067f",
+        "asset": "TMGG",
+        "category": "erc721",
+        "rawContract": {
+          "value": null,
+          "address": "0x2841413795bbe4e42c1a8558b3e55ecde4a12014",
+          "decimal": null
+        },
+        "metadata": {
+          "blockTimestamp": "2022-09-17T18:48:59.000Z"
+        }
+      }
+    ]
+  }
+}
