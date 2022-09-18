@@ -87,7 +87,7 @@
 
 .titleContainer {
   width: 100%;
-  justify-content: flex-start;
+  justify-content: space-between;
   padding: 1rem 2rem;
 }
 
@@ -210,8 +210,8 @@
   width: 48px;
   height: 48px;
 
-  opacity: 0.7;
-  filter: drop-shadow(0px 0px 6px rgba(255, 255, 255, 0.75));
+  opacity: 0.9;
+  filter: drop-shadow(0px 0px 6px rgba(255, 255, 255, 0.25));
 }
 
 .tableContainer {
@@ -227,4 +227,16 @@
 
 .transactionRowContainer:hover {
   background: rgba(255, 255, 255, 0.1);
+}
+
+.graphViewButton {
+  background: rgba(255, 255, 255, 0.05) !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+  border-radius: 10px !important;
+  padding: 0.5rem 1rem !important;
+  transition: 2s ease-in-out;
+}
+
+.graphViewButton:hover {
+  background: rgba(255, 255, 255, 0.15) !important;
 }

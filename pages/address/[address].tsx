@@ -12,6 +12,7 @@ import {
   Th,
   Td,
   TableContainer,
+  Button,
 } from "@chakra-ui/react";
 import EthereumLogo from "@components/EthereumLogo";
 import Navbar from "@components/Navbar";
@@ -133,6 +134,10 @@ function Address() {
 
   function handleSwitchChange() {
     setShowZeroValueTxns(!showZeroValueTxns);
+  }
+
+  function handleGraphViewNavigation() {
+    router.push(`/graph`);
   }
 
   function processTransactions(data: any) {
@@ -281,8 +286,18 @@ function Address() {
       <Navbar />
       <VStack className={styles.contentContainer}>
         <HStack className={styles.titleContainer}>
-          <Text className={styles.header}>Address</Text>
-          <Text className={styles.address}>{`${address} (iamminci.eth)`}</Text>
+          <HStack>
+            <Text className={styles.header}>Address</Text>
+            <Text
+              className={styles.address}
+            >{`${address} (iamminci.eth)`}</Text>
+          </HStack>
+          <Button
+            className={styles.graphViewButton}
+            onClick={handleGraphViewNavigation}
+          >
+            <Text>Enter Graph View</Text>
+          </Button>
         </HStack>
         <Box className={styles.titleDivider} />
         <HStack w="100%" h="100%">
