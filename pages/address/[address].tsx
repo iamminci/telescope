@@ -20,10 +20,30 @@ import styles from "@styles/Address.module.css";
 import PieChart from "@components/PieChart";
 import { useEffect, useState } from "react";
 import txnData from "@data/transactions.json";
+import Gradient from "javascript-color-gradient";
 import { useRouter } from "next/router";
-import { abridgeAddress, abridgeMethod } from "@utils/helpers";
-import { formatEther, parseEther } from "ethers/lib/utils";
+import {
+  abridgeAddress,
+  abridgeMethod,
+  convertCamelCaseToWords,
+  removeWhitespaceAroundString,
+} from "@utils/helpers";
+import { formatUnits, formatEther, parseEther } from "ethers/lib/utils";
 import Transaction from "@components/Transaction";
+import { Network, Alchemy } from "alchemy-sdk";
+
+const settings = {
+  apiKey: "ciWZ5nOwLHUnAsHaCH7Flrs4lIfMVABb", // Replace with your Alchemy API Key.
+  network: Network.ETH_MAINNET, // Replace with your network.
+};
+const alchemy = new Alchemy(settings);
+
+const tokenWhitelist: { [key: string]: any } = {
+  "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48": "USDC",
+  "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2": "WETH",
+  "0x6b175474e89094c44da98b954eedeac495271d0f": "DAI",
+  "0xc18360217d8f7ab5e7c516566761ea12ce7f9d72": "ENS",
+};
 
 // WHITELIST BINANCE COINBASE PROPERLY
 const addressWhitelist: { [key: string]: any } = {
@@ -43,15 +63,63 @@ const addressWhitelist: { [key: string]: any } = {
   "0xd90e2f925da726b50c4ed8d0fb90ad053324f31b": "Tornado Cash",
 };
 
-function convertCamelCaseToWords(str: string) {
-  return str.replace(/([A-Z])/g, " $1").replace(/^./, function (str) {
-    return str.toUpperCase();
-  });
-}
+const tokenData = [
+  {
+    name: "USDC",
+    contractAddress: "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+    logo: "https://static.alchemyapi.io/images/assets/3408.png",
+    tokenBalance: 1457.66,
+    fiatBalance: 1457.66,
+  },
+  {
+    name: "WETH",
+    contractAddress: "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+    logo: "https://static.alchemyapi.io/images/assets/2396.png",
+    tokenBalance: 0.31,
+    fiatBalance: 462.93,
+  },
+  {
+    name: "ETH",
+    contractAddress: "",
+    logo: "/eth.png",
+    tokenBalance: 1.56,
+    fiatBalance: 2329.18,
+  },
+  {
+    name: "DAI",
+    contractAddress: "0x6b175474e89094c44da98b954eedeac495271d0f",
+    logo: "https://static.alchemyapi.io/images/assets/4943.png",
+    tokenBalance: 903.42,
+    fiatBalance: 903.47,
+  },
+  {
+    name: "ENS",
+    contractAddress: "0xc18360217d8f7ab5e7c516566761ea12ce7f9d72",
+    logo: "https://static.alchemyapi.io/images/assets/13855.png",
+    tokenBalance: 26.26,
+    fiatBalance: 392.12,
+  },
+];
 
-function removeWhitespaceAroundString(str: string) {
-  return str.replace(/^\s+|\s+$/g, "");
-}
+const sortedTokenData = tokenData.sort((a, b) => b.fiatBalance - a.fiatBalance);
+
+const aggregateBalance = tokenData.reduce(
+  (acc, token) => acc + token.fiatBalance,
+  0
+);
+
+const gradientArray = new Gradient()
+  .setColorGradient("#A9480C", "#FBC3A1")
+  .setMidpoint(5)
+  .getColors();
+
+const data = tokenData.map((token: any, idx: number) => {
+  return {
+    label: token.name,
+    value: token.fiatBalance,
+    color: gradientArray[idx],
+  };
+});
 
 function Address() {
   const [showZeroValueTxns, setShowZeroValueTxns] = useState(false);
@@ -59,6 +127,7 @@ function Address() {
   const [transactionsMap, setTransactionsMap] = useState<{
     [key: string]: any;
   }>({});
+  const [tokenBalances, setTokenBalances] = useState<any[]>([]);
   const router = useRouter();
   const { address, txn } = router.query;
 
@@ -146,8 +215,42 @@ function Address() {
   }
 
   useEffect(() => {
+    async function fetchTokenBalances() {
+      if (!address) return;
+      const etherBalance = await alchemy.core.getBalance(address as string);
+      console.log(formatEther(etherBalance));
+      const { tokenBalances: balances } = await alchemy.core.getTokenBalances(
+        address as string,
+        "DEFAULT_TOKENS" as any
+      );
+
+      const filterWithBalances: any[] = balances.filter(
+        (token: any) => Number(token.tokenBalance) > 0
+      );
+
+      filterWithBalances.forEach((token) => {
+        if (
+          token.contractAddress === "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
+        ) {
+          token.formattedBalance = formatUnits(token.tokenBalance, 6);
+        } else {
+          token.formattedBalance = formatUnits(token.tokenBalance, 18);
+        }
+        console.log("token.formattedBalance: ", token.formattedBalance);
+      });
+
+      filterWithBalances.push({
+        contractAddress: "",
+        tokenBalance: formatEther(etherBalance),
+      });
+
+      console.log("filterWithBalances", filterWithBalances);
+
+      setTokenBalances(filterWithBalances);
+    }
     processTransactions(txnData);
-  }, []);
+    fetchTokenBalances();
+  }, [address]);
 
   if (address !== "0xa109BC6F8292B52A6f89e8Fc5EABF2947EC31bFA") {
     return (
@@ -179,39 +282,77 @@ function Address() {
       <VStack className={styles.contentContainer}>
         <HStack className={styles.titleContainer}>
           <Text className={styles.header}>Address</Text>
-          <Text className={styles.address}>{`${address} (minci.eth)`}</Text>
+          <Text className={styles.address}>{`${address} (iamminci.eth)`}</Text>
         </HStack>
         <Box className={styles.titleDivider} />
         <HStack w="100%" h="100%">
           <VStack className={styles.overviewContainer}>
             <VStack className={styles.overviewHeaderContainer}>
               <Text className={styles.header}>Total Balance</Text>
-              <Text className={styles.fiatBalance}>$12,307.55</Text>
-              <Text className={styles.ethBalance}>7.676 ETH</Text>
+              <Text
+                className={styles.fiatBalance}
+              >{`$${aggregateBalance.toFixed(2)}`}</Text>
+              <Text className={styles.ethBalance}>3.82 ETH</Text>
             </VStack>
-            <Box className={styles.pieChartContainer}>
-              <PieChart
-                data={[
-                  { title: "One", value: 10, color: "#E38627" },
-                  { title: "Two", value: 15, color: "#C13C37" },
-                  { title: "Three", value: 20, color: "#6A2135" },
-                ]}
-              />
+            <Box className={styles.pieChartContainer} w="300px">
+              <PieChart data={data} />
             </Box>
-            <VStack className={styles.tokenContainer}>
-              {new Array(5).fill(0).map((_, idx) => (
-                <HStack key={`bye-${idx}`} className={styles.tokenRowContainer}>
-                  <Image
-                    src="/eth.png"
-                    alt="eth logo"
-                    className={styles.tokenLogo}
-                  ></Image>
-                  <Text>ETH</Text>
-                  <Text>3.85</Text>
-                  <Text>$5281</Text>
-                </HStack>
-              ))}
-            </VStack>
+            <Box className={styles.tokenTableContainer}>
+              <TableContainer>
+                <Table variant="unstyled">
+                  <Tbody>
+                    {sortedTokenData.map(
+                      ({
+                        name,
+                        contractAddress,
+                        logo,
+                        tokenBalance,
+                        fiatBalance,
+                      }) => (
+                        <Tr key={contractAddress}>
+                          <Td padding={"0.5rem 0.2rem"}>
+                            {" "}
+                            <Image
+                              src={logo}
+                              alt="token logo"
+                              className={styles.tokenLogo}
+                            ></Image>
+                          </Td>
+                          <Td>{name}</Td>
+                          <Td>{tokenBalance}</Td>
+                          <Td>${fiatBalance}</Td>
+                        </Tr>
+                      )
+                    )}
+                  </Tbody>
+                </Table>
+              </TableContainer>
+            </Box>
+            {/* <VStack className={styles.tokenContainer}>
+              {sortedTokenData.map(
+                ({
+                  name,
+                  contractAddress,
+                  logo,
+                  tokenBalance,
+                  fiatBalance,
+                }) => (
+                  <HStack
+                    key={contractAddress}
+                    className={styles.tokenRowContainer}
+                  >
+                    <Image
+                      src={logo}
+                      alt="token logo"
+                      className={styles.tokenLogo}
+                    ></Image>
+                    <Text>{name}</Text>
+                    <Text>{tokenBalance}</Text>
+                    <Text>${fiatBalance}</Text>
+                  </HStack>
+                )
+              )}
+            </VStack> */}
           </VStack>
           <Box className={styles.contentDivider} />
           <VStack className={styles.transactionContainer}>
@@ -251,51 +392,55 @@ function Address() {
                     </Thead>
                     <Tbody>
                       {Object.keys(transactions).map((key) =>
-                        transactions[key].map(
-                          (
-                            {
-                              formattedDate,
-                              formattedTime,
-                              formattedFunctionName,
-                              displayAddress,
-                              displayName,
-                              formattedValue,
-                              hash,
-                              asset,
-                              txreceipt_status,
-                            }: any,
-                            idx: number
-                          ) => (
-                            <Tr
-                              key={hash}
-                              onClick={() => {
-                                router.push(`/address/${address}?txn=${hash}`);
-                              }}
-                              className={styles.transactionRowContainer}
-                            >
-                              <Td>{idx === 0 ? formattedDate : ""}</Td>
-                              <Td>{formattedTime}</Td>
-                              <Td>
-                                {displayName
-                                  ? abridgeMethod(displayName)
-                                  : abridgeAddress(displayAddress)}
-                              </Td>
-                              <Td>{abridgeMethod(formattedFunctionName)}</Td>
+                        transactions[key]
+                          .sort((a, b) => b.timeStamp - a.timeStamp)
+                          .map(
+                            (
+                              {
+                                formattedDate,
+                                formattedTime,
+                                formattedFunctionName,
+                                displayAddress,
+                                displayName,
+                                formattedValue,
+                                hash,
+                                asset,
+                                txreceipt_status,
+                              }: any,
+                              idx: number
+                            ) => (
+                              <Tr
+                                key={hash}
+                                onClick={() => {
+                                  router.push(
+                                    `/address/${address}?txn=${hash}`
+                                  );
+                                }}
+                                className={styles.transactionRowContainer}
+                              >
+                                <Td>{idx === 0 ? formattedDate : ""}</Td>
+                                <Td>{formattedTime}</Td>
+                                <Td>
+                                  {displayName
+                                    ? abridgeMethod(displayName)
+                                    : abridgeAddress(displayAddress)}
+                                </Td>
+                                <Td>{abridgeMethod(formattedFunctionName)}</Td>
 
-                              <Td>
-                                {formattedFunctionName !== "Approve"
-                                  ? `-${formattedValue} ${asset ?? "ETH"}`
-                                  : ""}
-                              </Td>
-                              <Td>
-                                {txreceipt_status === "0"
-                                  ? "Failed"
-                                  : "Success"}
-                              </Td>
-                              {/* <Td>Ether</Td> */}
-                            </Tr>
+                                <Td>
+                                  {formattedFunctionName !== "Approve"
+                                    ? `-${formattedValue} ${asset ?? "ETH"}`
+                                    : ""}
+                                </Td>
+                                <Td>
+                                  {txreceipt_status === "0"
+                                    ? "Failed"
+                                    : "Success"}
+                                </Td>
+                                {/* <Td>Ether</Td> */}
+                              </Tr>
+                            )
                           )
-                        )
                       )}
                     </Tbody>
                   </Table>

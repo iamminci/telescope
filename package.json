@@ -13,8 +13,10 @@
     "@chakra-ui/react": "^2.3.2",
     "@emotion/react": "^11.10.4",
     "@emotion/styled": "^11.10.4",
+    "alchemy-sdk": "^2.0.4",
     "ethers": "^5.7.1",
     "framer-motion": "^6.5.1",
+    "javascript-color-gradient": "^2.4.4",
     "next": "12.3.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
@@ -22,6 +24,7 @@
     "react-minimal-pie-chart": "^8.3.0"
   },
   "devDependencies": {
+    "@types/javascript-color-gradient": "^2.4.0",
     "@types/node": "18.7.18",
     "@types/react": "18.0.20",
     "@types/react-dom": "18.0.6",
