@@ -4,26 +4,34 @@ import styles from "@styles/Home.module.css";
 
 type SearchBarProps = {
   isNavbar: boolean;
+  handleInputChange?: (e: any) => void;
   handleSwitchChange?: () => void;
+  handleNavigation?: (e: any) => void;
   isGraphView?: boolean;
 };
 
 function Searchbar({
   isNavbar,
+  handleInputChange,
   handleSwitchChange,
+  handleNavigation,
   isGraphView,
 }: SearchBarProps) {
   return (
     <HStack className={!isNavbar ? styles.searchbar : styles.searchbarMini}>
       <Search2Icon color="white" />
-      <Input
-        className={styles.searchInput}
-        placeholder={
-          !isNavbar
-            ? "Search by Address / Transaction Hash / Block / Token / ENS"
-            : "Search by Address..."
-        }
-      />
+      <form onSubmit={handleNavigation} style={{ width: "100%" }}>
+        <Input
+          className={styles.searchInput}
+          placeholder={
+            !isNavbar
+              ? "Search by Address / Transaction Hash / Block / Token / ENS"
+              : "Search by Address..."
+          }
+          onSubmit={handleNavigation}
+          onChange={handleInputChange}
+        />
+      </form>
       {!isNavbar && (
         <HStack className={styles.switchContainer}>
           <Switch

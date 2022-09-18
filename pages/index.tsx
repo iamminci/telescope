@@ -11,8 +11,13 @@ function Home() {
   const [isGraphView, setIsGraphView] = useState(false);
   const router = useRouter();
 
-  function handleNavigation() {
-    router.push("/address/0x0000000000000000000000000000000000000000");
+  function handleInputChange(e: any) {
+    console.log("e:", e.target.value);
+  }
+
+  function handleNavigation(e: any) {
+    e.preventDefault();
+    router.push("/address/0xa109BC6F8292B52A6f89e8Fc5EABF2947EC31bFA");
   }
 
   return (
@@ -29,6 +34,8 @@ function Home() {
           handleSwitchChange={() => {
             setIsGraphView(!isGraphView);
           }}
+          handleInputChange={handleInputChange}
+          handleNavigation={handleNavigation}
           isGraphView={isGraphView}
           isNavbar={false}
         />
