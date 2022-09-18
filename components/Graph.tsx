@@ -3,9 +3,11 @@ import { ForceGraph2D } from "react-force-graph";
 import styles from "@styles/Graph.module.css";
 import data from "@data/graphdata.json";
 import data2 from "@data/graphdata2.json";
-import { Box, useDisclosure } from "@chakra-ui/react";
-import { useCallback, useEffect, useRef, useState } from "react";
+import data3 from "@data/graphdata3.json";
+import { Box, HStack, useDisclosure, Input } from "@chakra-ui/react";
+import { useEffect, useRef, useState } from "react";
 import { Sidebar } from "./Sidebar";
+import { Search2Icon } from "@chakra-ui/icons";
 // import etherscan from "../etherscan.json";
 
 // console.log("ethereum", etherscan);
@@ -25,6 +27,7 @@ function genRandomTree(N = 300, reverse = false) {
 function Graph() {
   const [graphData, setGraphData] = useState(data);
   const [isClicked, setIsClicked] = useState(false);
+  const [isClicked2, setIsClicked2] = useState(false);
   const { isOpen, onOpen, onClose } = useDisclosure();
   console.log(data);
 
@@ -34,7 +37,7 @@ function Graph() {
     const fg = fgRef.current;
 
     // Deactivate existing forces
-    fg.d3Force("link").distance((link) => 50);
+    fg.d3Force("link").distance((link) => 40);
     fg.d3Force("charge").strength(-200); // the default is -30
   }, []);
 
@@ -82,27 +85,10 @@ function Graph() {
       }
     })();
   }
-  function interpolate(node1, node2) {
-    const x1 = node1.x;
-    const y1 = node1.y;
-    const x2 = node2.x;
-    const y2 = node2.y;
-    const dx = x2 - x1;
-    const dy = y2 - y1;
-    return { dx, dy };
-    const distance = Math.sqrt(dx * dx + dy * dy);
-    const distRatio = 1 + distance / Math.hypot(node.x, node.y);
-    fgRef.current.zoom(distRatio, 1000);
-  }
-
-  // gen a number persistent color from around the palette
-  const getColor = (n) =>
-    "#" + ((n * 1234567) % Math.pow(2, 24)).toString(16).padStart(6, "0");
 
   const handleClick = (node) => {
     onOpen();
     // Aim at node from outside it
-    console.log("clicked");
     const distance = 40;
     const distRatio = 1 + distance / Math.hypot(node.x, node.y);
     // fgRef.current.zoomToFit(1000, 100);
@@ -126,6 +112,22 @@ function Graph() {
     setHighlightLinks(highlightLinks);
   };
 
+  function handleSubmit(e: any) {
+    e.preventDefault();
+    // Aim at node from outside it
+    const distance = 40;
+    // fgRef.current.zoomToFit(1000, 100);
+
+    fgRef.current.centerAt(
+      60,
+      65,
+      500 // ms transition duration
+    );
+    fgRef.current.zoom(8, 500);
+    // setGraphData(data2);
+    setIsClicked2(true);
+  }
+
   const handleLinkHover = (link) => {
     highlightNodes.clear();
     highlightLinks.clear();
@@ -143,10 +145,38 @@ function Graph() {
 
   return (
     <>
-      {isClicked ? (
+      {isClicked2 ? (
         <ForceGraph2D
           ref={fgRef}
           graphData={data2}
+          nodeLabel="label"
+          nodeAutoColorBy="group"
+          autoPauseRedraw={false}
+          linkWidth={(link) => 5}
+          linkDirectionalParticles={4}
+          linkDirectionalParticleWidth={(link) => 4}
+          linkDirectionalArrowLength={5}
+          linkDirectionalArrowRelPos={1}
+          linkDirectionalArrowColor={() => "rgba(255,255,255,0.8)"}
+          onBackgroundClick={() => fgRef.current.zoomToFit(1000, 100)}
+          linkCurvature="curvature"
+          linkColor={() => "rgba(255,255,255,0.8)"}
+          nodeCanvasObject={(node, ctx, globalScale) =>
+            nodePaint(node, ctx, globalScale)
+          }
+          nodeVal={(node) => node.value}
+          onNodeDragEnd={(node) => {
+            node.fx = node.x;
+            node.fy = node.y;
+          }}
+          onNodeClick={handleClick}
+          cooldownTicks={20}
+          onLinkHover={handleLinkHover}
+        />
+      ) : isClicked ? (
+        <ForceGraph2D
+          ref={fgRef}
+          graphData={data3}
           nodeLabel="label"
           nodeAutoColorBy="group"
           autoPauseRedraw={false}
@@ -202,6 +232,23 @@ function Graph() {
           // onEngineStop={() => fgRef.current.zoomToFit(1000, 100)}
         />
       )}
+      <HStack
+        className={styles.searchbarMini}
+        position="fixed"
+        bottom="5"
+        right="5"
+      >
+        <Search2Icon color="white" />
+        <form onSubmit={handleSubmit} style={{ width: "100%" }}>
+          <Input
+            className={styles.searchInput}
+            placeholder={"Search [token Address]/[tokenId]"}
+            onSubmit={handleSubmit}
+            onChange={() => {}}
+          />
+        </form>
+      </HStack>
+
       <Sidebar isOpen={isOpen} onClose={onClose} isHover={isHover} />
     </>
   );

@@ -9,15 +9,17 @@ import Searchbar from "@components/Searchbar";
 
 function Home() {
   const [isGraphView, setIsGraphView] = useState(false);
+  const [inputValue, setInputValue] = useState("");
   const router = useRouter();
 
   function handleInputChange(e: any) {
     console.log("e:", e.target.value);
+    setInputValue(e.target.value);
   }
 
   function handleNavigation(e: any) {
     e.preventDefault();
-    router.push("/address/0xa109BC6F8292B52A6f89e8Fc5EABF2947EC31bFA");
+    router.push(`/address/${inputValue}`);
   }
 
   return (

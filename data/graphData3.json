@@ -43,13 +43,6 @@
       "value": 4
     },
     {
-      "id": "12",
-      "label": "0x2eD849173c7a54F45f849675A71B62c0c83246D9",
-      "name": "0x0x2e...46D9",
-      "group": 1,
-      "value": 4
-    },
-    {
       "id": "6",
       "label": "0xa109bc6f8292b52a6f89e8fc5eabf2947ec31bfa",
       "name": "Uniswap",
@@ -57,15 +50,6 @@
       "value": 8,
       "code": "#FF3580",
       "imgSrc": "/uniswap.png"
-    },
-    {
-      "id": "13",
-      "label": "0xa109bc6f8292b52a6f89e8fc5eabf2947ec31bfa",
-      "name": "Opensea",
-      "group": 3,
-      "value": 10,
-      "code": "#0052FF",
-      "imgSrc": "/opensea.png"
     },
     {
       "id": "7",
@@ -120,9 +104,12 @@
     { "source": "0", "target": "3", "value": 1 },
     { "source": "0", "target": "4", "value": 1 },
     { "source": "0", "target": "5", "value": 2 },
-    { "source": "5", "target": "12", "value": 2 },
-    { "source": "12", "target": "13", "value": 2 },
-    { "source": "0", "target": "6", "value": 1 },
+    { "source": "0", "target": "6", "curvature": -0.1, "value": 1 },
+    { "source": "0", "target": "6", "curvature": -0.2, "value": 1 },
+    { "source": "6", "target": "0", "curvature": -0.1, "value": 1 },
+    { "source": "0", "target": "6", "curvature": -0.3, "value": 1 },
+    { "source": "6", "target": "0", "curvature": -0.2, "value": 1 },
+    { "source": "6", "target": "0", "curvature": -0.3, "value": 1 },
     { "source": "0", "target": "7", "value": 1 },
     { "source": "0", "target": "8", "value": 2 },
     { "source": "0", "target": "9", "value": 2 },

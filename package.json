@@ -21,7 +21,8 @@
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-force-graph": "^1.41.14",
-    "react-minimal-pie-chart": "^8.3.0"
+    "react-minimal-pie-chart": "^8.3.0",
+    "react-toastify": "^9.0.8"
   },
   "devDependencies": {
     "@types/javascript-color-gradient": "^2.4.0",

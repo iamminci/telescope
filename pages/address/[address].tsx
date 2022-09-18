@@ -22,6 +22,9 @@ import PieChart from "@components/PieChart";
 import { useEffect, useState } from "react";
 import txnData from "@data/transactions.json";
 import Gradient from "javascript-color-gradient";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import CustomToast from "@components/CustomToast";
 import { useRouter } from "next/router";
 import {
   abridgeAddress,
@@ -32,6 +35,7 @@ import {
 import { formatUnits, formatEther, parseEther } from "ethers/lib/utils";
 import Transaction from "@components/Transaction";
 import { Network, Alchemy } from "alchemy-sdk";
+import { Tooltip } from "@chakra-ui/react";
 
 const settings = {
   apiKey: "ciWZ5nOwLHUnAsHaCH7Flrs4lIfMVABb", // Replace with your Alchemy API Key.
@@ -122,6 +126,18 @@ const data = tokenData.map((token: any, idx: number) => {
   };
 });
 
+function handleClickCell(hash: string) {
+  toast(<CustomToast txnHash={hash} />, {
+    position: "bottom-right",
+    autoClose: 5000,
+    hideProgressBar: false,
+    closeOnClick: false,
+    pauseOnHover: true,
+    draggable: true,
+    progress: undefined,
+  });
+}
+
 function Address() {
   const [showZeroValueTxns, setShowZeroValueTxns] = useState(false);
   const [transactions, setTransactions] = useState<{ [key: string]: any }>({});
@@ -129,15 +145,16 @@ function Address() {
     [key: string]: any;
   }>({});
   const [tokenBalances, setTokenBalances] = useState<any[]>([]);
+  const [showApprove, setShowApprove] = useState(false);
   const router = useRouter();
   const { address, txn } = router.query;
 
   function handleSwitchChange() {
-    setShowZeroValueTxns(!showZeroValueTxns);
+    setShowApprove(!showApprove);
   }
 
   function handleGraphViewNavigation() {
-    router.push(`/graph`);
+    router.push(`/graph/0xa109BC6F8292B52A6f89e8Fc5EABF2947EC31bFA`);
   }
 
   function processTransactions(data: any) {
@@ -221,7 +238,7 @@ function Address() {
 
   useEffect(() => {
     async function fetchTokenBalances() {
-      if (!address) return;
+      if (address !== "0xa109BC6F8292B52A6f89e8Fc5EABF2947EC31bFA") return;
       const etherBalance = await alchemy.core.getBalance(address as string);
       console.log(formatEther(etherBalance));
       const { tokenBalances: balances } = await alchemy.core.getTokenBalances(
@@ -269,10 +286,24 @@ function Address() {
         }}
       >
         <Navbar />
-        <Text>
-          Sorry, there are too many requests being sent at the moment. Please
-          try again later.
-        </Text>
+        <VStack>
+          <Text>
+            Sorry, the free tier APIs are getting rate-limited. Please try again
+            later.
+          </Text>
+          <Text>
+            In the meantime, you can try out a demo flow by clicking here:
+          </Text>
+          <Box h=".5rem"></Box>
+          <Button
+            className={styles.graphViewButton}
+            onClick={() =>
+              router.push(`/address/0xa109BC6F8292B52A6f89e8Fc5EABF2947EC31bFA`)
+            }
+          >
+            Go to Demo Flow
+          </Button>
+        </VStack>
       </div>
     );
   }
@@ -333,7 +364,9 @@ function Address() {
                               className={styles.tokenLogo}
                             ></Image>
                           </Td>
+
                           <Td>{name}</Td>
+
                           <Td>{tokenBalance}</Td>
                           <Td>${fiatBalance}</Td>
                         </Tr>
@@ -377,7 +410,7 @@ function Address() {
                 <HStack>
                   <Switch
                     colorScheme="orange"
-                    onChange={handleSwitchChange}
+                    onChange={() => {}}
                     className={
                       showZeroValueTxns ? styles.isSwitchOn : styles.isSwitchOff
                     }
@@ -423,38 +456,53 @@ function Address() {
                                 txreceipt_status,
                               }: any,
                               idx: number
-                            ) => (
-                              <Tr
-                                key={hash}
-                                onClick={() => {
-                                  router.push(
-                                    `/address/${address}?txn=${hash}`
-                                  );
-                                }}
-                                className={styles.transactionRowContainer}
-                              >
-                                <Td>{idx === 0 ? formattedDate : ""}</Td>
-                                <Td>{formattedTime}</Td>
-                                <Td>
-                                  {displayName
-                                    ? abridgeMethod(displayName)
-                                    : abridgeAddress(displayAddress)}
-                                </Td>
-                                <Td>{abridgeMethod(formattedFunctionName)}</Td>
-
-                                <Td>
-                                  {formattedFunctionName !== "Approve"
-                                    ? `-${formattedValue} ${asset ?? "ETH"}`
-                                    : ""}
-                                </Td>
-                                <Td>
-                                  {txreceipt_status === "0"
-                                    ? "Failed"
-                                    : "Success"}
-                                </Td>
-                                {/* <Td>Ether</Td> */}
-                              </Tr>
-                            )
+                            ) =>
+                              (showApprove ||
+                                formattedFunctionName !== "Approve") && (
+                                <Tr
+                                  key={hash}
+                                  onClick={() => {
+                                    if (
+                                      hash ===
+                                      "0x29e6b5173a1009f8213ac5238f749a8e8a898b752d9221e6543342898caeadfb"
+                                    ) {
+                                      router.push(
+                                        `/address/${address}?txn=${hash}`
+                                      );
+                                    } else {
+                                      handleClickCell(hash);
+                                    }
+                                  }}
+                                  className={styles.transactionRowContainer}
+                                >
+                                  <Td>{idx === 0 ? formattedDate : ""}</Td>
+                                  <Td>{formattedTime}</Td>
+                                  <Tooltip
+                                    label={displayName ?? displayAddress}
+                                    aria-label="A tooltip"
+                                  >
+                                    <Td>
+                                      {displayName
+                                        ? abridgeMethod(displayName)
+                                        : abridgeAddress(displayAddress)}
+                                    </Td>
+                                  </Tooltip>
+                                  <Td>
+                                    {abridgeMethod(formattedFunctionName)}
+                                  </Td>
+                                  <Td>
+                                    {formattedFunctionName !== "Approve"
+                                      ? `-${formattedValue} ${asset ?? "ETH"}`
+                                      : ""}
+                                  </Td>
+                                  <Td>
+                                    {txreceipt_status === "0"
+                                      ? "Failed"
+                                      : "Success"}
+                                  </Td>
+                                  {/* <Td>Ether</Td> */}
+                                </Tr>
+                              )
                           )
                       )}
                     </Tbody>
@@ -464,6 +512,7 @@ function Address() {
             </VStack>
             <Box className={styles.ellipseThree}></Box>
           </VStack>
+          <ToastContainer />
         </HStack>
       </VStack>
       <Box className={styles.ellipseOne}></Box>
