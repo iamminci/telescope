@@ -78,6 +78,17 @@
   padding-bottom: 2rem;
 }
 
+.mobileText {
+  font-style: normal;
+  font-weight: 400;
+  font-size: 20px;
+  line-height: 30px;
+  color: #ffffff;
+  text-shadow: 0px 0px 20px rgba(255, 255, 255, 0.75);
+  padding-bottom: 2rem;
+  text-align: center;
+}
+
 .searchbar {
   box-sizing: border-box;
   width: 80%;
