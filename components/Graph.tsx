@@ -1,9 +1,11 @@
+// @ts-nocheck
 import { ForceGraph2D } from "react-force-graph";
 import styles from "@styles/Graph.module.css";
 import data from "@data/graphdata.json";
 import data2 from "@data/graphdata2.json";
-import { Box } from "@chakra-ui/react";
+import { Box, useDisclosure } from "@chakra-ui/react";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { Sidebar } from "./Sidebar";
 // import etherscan from "../etherscan.json";
 
 // console.log("ethereum", etherscan);
@@ -23,6 +25,7 @@ function genRandomTree(N = 300, reverse = false) {
 function Graph() {
   const [graphData, setGraphData] = useState(data);
   const [isClicked, setIsClicked] = useState(false);
+  const { isOpen, onOpen, onClose } = useDisclosure();
   console.log(data);
 
   const fgRef = useRef();
@@ -97,6 +100,7 @@ function Graph() {
     "#" + ((n * 1234567) % Math.pow(2, 24)).toString(16).padStart(6, "0");
 
   const handleClick = (node) => {
+    onOpen();
     // Aim at node from outside it
     console.log("clicked");
     const distance = 40;
@@ -104,63 +108,102 @@ function Graph() {
     // fgRef.current.zoomToFit(1000, 100);
 
     fgRef.current.centerAt(
-      node.x,
+      node.x + 20,
       node.y,
       500 // ms transition duration
     );
-    fgRef.current.zoom(5, 500);
+    fgRef.current.zoom(8, 500);
     // setGraphData(data2);
     setIsClicked(true);
   };
 
-  return isClicked ? (
-    <ForceGraph2D
-      ref={fgRef}
-      graphData={data2}
-      nodeLabel="name"
-      nodeAutoColorBy="group"
-      linkDirectionalArrowLength={5}
-      linkDirectionalArrowRelPos={1}
-      linkDirectionalArrowColor={() => "rgba(255,255,255,0.8)"}
-      onBackgroundClick={() => fgRef.current.zoomToFit(1000, 100)}
-      linkCurvature="curvature"
-      linkColor={() => "rgba(255,255,255,0.8)"}
-      nodeCanvasObject={(node, ctx, globalScale) =>
-        nodePaint(node, ctx, globalScale)
-      }
-      nodeVal={(node) => node.value}
-      onNodeDragEnd={(node) => {
-        node.fx = node.x;
-        node.fy = node.y;
-      }}
-      onNodeClick={handleClick}
-      cooldownTicks={20}
-      // onEngineStop={() => fgRef.current.zoomToFit(1000, 100)}
-    />
-  ) : (
-    <ForceGraph2D
-      ref={fgRef}
-      graphData={data}
-      nodeLabel="name"
-      nodeAutoColorBy="group"
-      // linkDirectionalArrowLength={5}
-      // linkDirectionalArrowRelPos={1}
-      // linkDirectionalArrowColor={() => "rgba(255,255,255,0.8)"}
-      onBackgroundClick={() => fgRef.current.zoomToFit(1000, 100)}
-      linkCurvature="curvature"
-      linkColor={() => "rgba(255,255,255,0.8)"}
-      nodeCanvasObject={(node, ctx, globalScale) =>
-        nodePaint(node, ctx, globalScale)
-      }
-      nodeVal={(node) => node.value}
-      onNodeDragEnd={(node) => {
-        node.fx = node.x;
-        node.fy = node.y;
-      }}
-      onNodeClick={handleClick}
-      cooldownTicks={20}
-      // onEngineStop={() => fgRef.current.zoomToFit(1000, 100)}
-    />
+  const [highlightNodes, setHighlightNodes] = useState(new Set());
+  const [highlightLinks, setHighlightLinks] = useState(new Set());
+
+  const [isHover, setHover] = useState(false);
+  const updateHighlight = () => {
+    setHighlightNodes(highlightNodes);
+    setHighlightLinks(highlightLinks);
+  };
+
+  const handleLinkHover = (link) => {
+    highlightNodes.clear();
+    highlightLinks.clear();
+
+    if (link) {
+      highlightLinks.add(link);
+      highlightNodes.add(link.source);
+      highlightNodes.add(link.target);
+    }
+
+    setHover(!isHover);
+
+    updateHighlight();
+  };
+
+  return (
+    <>
+      {isClicked ? (
+        <ForceGraph2D
+          ref={fgRef}
+          graphData={data2}
+          nodeLabel="label"
+          nodeAutoColorBy="group"
+          autoPauseRedraw={false}
+          linkWidth={(link) => (highlightLinks.has(link) ? 5 : 1)}
+          linkDirectionalParticles={4}
+          linkDirectionalParticleWidth={(link) =>
+            highlightLinks.has(link) ? 4 : 0
+          }
+          linkDirectionalArrowLength={5}
+          linkDirectionalArrowRelPos={0.95}
+          linkDirectionalArrowColor={() => "rgba(255,255,255,0.8)"}
+          onBackgroundClick={() => fgRef.current.zoomToFit(1000, 100)}
+          linkCurvature="curvature"
+          linkColor={() => "rgba(255,255,255,0.8)"}
+          nodeCanvasObject={(node, ctx, globalScale) =>
+            nodePaint(node, ctx, globalScale)
+          }
+          nodeVal={(node) => node.value}
+          onNodeDragEnd={(node) => {
+            node.fx = node.x;
+            node.fy = node.y;
+          }}
+          onNodeClick={handleClick}
+          cooldownTicks={20}
+          onLinkHover={handleLinkHover}
+        />
+      ) : (
+        <ForceGraph2D
+          ref={fgRef}
+          graphData={data}
+          nodeLabel="name"
+          nodeAutoColorBy="group"
+          autoPauseRedraw={false}
+          linkWidth={(link) => (highlightLinks.has(link) ? 5 : 1)}
+          linkDirectionalParticles={4}
+          linkDirectionalParticleWidth={(link) =>
+            highlightLinks.has(link) ? 4 : 0
+          }
+          onBackgroundClick={() => fgRef.current.zoomToFit(1000, 100)}
+          linkCurvature="curvature"
+          linkColor={() => "rgba(255,255,255,0.8)"}
+          nodeCanvasObject={(node, ctx, globalScale) =>
+            nodePaint(node, ctx, globalScale)
+          }
+          nodeVal={(node) => node.value}
+          onNodeDragEnd={(node) => {
+            node.fx = node.x;
+            node.fy = node.y;
+          }}
+          onNodeClick={handleClick}
+          cooldownTicks={20}
+          onLinkHover={handleLinkHover}
+          // onEngineStop={() => fgRef.current.zoomToFit(1000, 100)}
+        />
+      )}
+      <Sidebar isOpen={isOpen} onClose={onClose} isHover={isHover} />
+    </>
   );
   // <ForceGraph2D
   //   graphData={data}

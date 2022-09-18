@@ -47,7 +47,7 @@ const tokenWhitelist: { [key: string]: any } = {
 };
 
 // WHITELIST BINANCE COINBASE PROPERLY
-const addressWhitelist: { [key: string]: any } = {
+export const addressWhitelist: { [key: string]: any } = {
   "0x7d655c57f71464b6f83811c55d84009cd9f5221c": "Gitcoin: Bulk Checkout",
   "0xa6b71e26c5e0845f74c812102ca7114b6a896ab2": "Gnosis Safe: 1.3.0",
   "0x7d2768de32b0b80b7a3454c06bdac94a69ddc7a9": "Aave V3: Lending Pool",
@@ -408,7 +408,7 @@ function Address() {
                     <Tbody>
                       {Object.keys(transactions).map((key) =>
                         transactions[key]
-                          .sort((a, b) => b.timeStamp - a.timeStamp)
+                          .sort((a: any, b: any) => b.timeStamp - a.timeStamp)
                           .map(
                             (
                               {

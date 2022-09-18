@@ -13,3 +13,7 @@
 .logo {
   width: 200px;
 }
+
+.transactionRowContainerSelected {
+  background: rgba(255, 255, 255, 0.1);
+}

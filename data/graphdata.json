@@ -1,16 +1,59 @@
 {
   "nodes": [
-    { "id": "0", "name": "0xa109", "group": 1, "value": 5 },
+    {
+      "id": "0",
+      "label": "0xa109bc6f8292b52a6f89e8fc5eabf2947ec31bfa",
+      "name": "0xa109...1bfa",
+      "group": 1,
+      "value": 6
+    },
     {
       "id": "1",
+      "label": "0xa109bc6f8292b52a6f89e8fc5eabf2947ec31bfa",
+      "name": "0x0000...dead",
+      "group": 1,
+      "value": 1
+    },
+    {
+      "id": "2",
+      "label": "0xa109bc6f8292b52a6f89e8fc5eabf2947ec31bfa",
+      "name": "0x7d65...221c",
+      "group": 1,
+      "value": 3
+    },
+    {
+      "id": "3",
+      "label": "0xa109bc6f8292b52a6f89e8fc5eabf2947ec31bfa",
+      "name": "0xa6b7...6ab2",
+      "group": 1,
+      "value": 2
+    },
+    {
+      "id": "4",
+      "label": "0xa109bc6f8292b52a6f89e8fc5eabf2947ec31bfa",
+      "name": "0x283a...b7f5",
+      "group": 1,
+      "value": 2
+    },
+    {
+      "id": "5",
+      "label": "0xa109bc6f8292b52a6f89e8fc5eabf2947ec31bfa",
+      "name": "0x6170...29a3",
+      "group": 1,
+      "value": 4
+    },
+    {
+      "id": "6",
+      "label": "0xa109bc6f8292b52a6f89e8fc5eabf2947ec31bfa",
       "name": "Uniswap",
       "group": 2,
-      "value": 6,
+      "value": 8,
       "code": "#FF3580",
       "imgSrc": "/uniswap.png"
     },
     {
-      "id": "2",
+      "id": "7",
+      "label": "0xa109bc6f8292b52a6f89e8fc5eabf2947ec31bfa",
       "name": "Coinbase",
       "group": 3,
       "value": 10,
@@ -18,21 +61,54 @@
       "imgSrc": "/coinbase.png"
     },
     {
-      "id": "3",
+      "id": "8",
+      "label": "0xa109bc6f8292b52a6f89e8fc5eabf2947ec31bfa",
       "name": "Binance",
       "group": 4,
-      "value": 6,
+      "value": 10,
       "code": "#F3BA2F",
       "imgSrc": "/binance.png"
     },
-    { "id": "4", "name": "0xba", "group": 5, "value": 3 },
-    { "id": "5", "name": "0xeeb", "group": 6, "value": 4 }
+    {
+      "id": "9",
+      "label": "0xa109bc6f8292b52a6f89e8fc5eabf2947ec31bfa",
+      "name": "Gitcoin",
+      "group": 4,
+      "value": 5,
+      "code": "#17BCD5",
+      "imgSrc": "/gitcoin.png"
+    },
+    {
+      "id": "10",
+      "label": "0xa109bc6f8292b52a6f89e8fc5eabf2947ec31bfa",
+      "name": "Aave V2",
+      "group": 4,
+      "value": 6,
+      "code": "#6093B7",
+      "imgSrc": "/aave.png"
+    },
+    {
+      "id": "11",
+      "label": "0xa109bc6f8292b52a6f89e8fc5eabf2947ec31bfa",
+      "name": "MATIC Bridge",
+      "group": 4,
+      "value": 7,
+      "code": "#8247E5",
+      "imgSrc": "/polygon.png"
+    }
   ],
   "links": [
+    { "source": "0", "target": "0", "value": 1 },
     { "source": "0", "target": "1", "value": 1 },
-    { "source": "0", "target": "2", "value": 2 },
-    { "source": "0", "target": "3", "value": 3 },
+    { "source": "0", "target": "2", "value": 1 },
+    { "source": "0", "target": "3", "value": 1 },
     { "source": "0", "target": "4", "value": 1 },
-    { "source": "0", "target": "5", "value": 2 }
+    { "source": "0", "target": "5", "value": 2 },
+    { "source": "0", "target": "6", "value": 3 },
+    { "source": "0", "target": "7", "value": 1 },
+    { "source": "0", "target": "8", "value": 2 },
+    { "source": "0", "target": "9", "value": 2 },
+    { "source": "0", "target": "10", "value": 2 },
+    { "source": "0", "target": "11", "value": 2 }
   ]
 }

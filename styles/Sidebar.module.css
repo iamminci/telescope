@@ -1,0 +1,108 @@
+.drawerBody {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  font-family: "Poppins";
+}
+
+.drawerButton {
+  background-color: transparent !important;
+  font-size: 1.2rem !important;
+  margin-top: 10px;
+  margin-left: 1rem;
+  margin-bottom: 10px;
+  position: relative;
+  text-decoration: none;
+  padding: 0 0 0 0 !important;
+  color: rgb(0, 0, 0);
+  opacity: 0.5;
+  transition: transform 0.3s ease;
+}
+
+.drawerButton:hover {
+  opacity: 1;
+}
+
+.drawerButton:hover::before {
+  transform: scaleX(1);
+}
+
+.drawerFooter {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start !important;
+}
+
+.drawerFooterLabel {
+  user-select: none;
+  padding: 0.5rem 0;
+  opacity: 0.8;
+  color: black;
+}
+
+.drawerFooterButton {
+  background-color: transparent !important;
+  padding-left: 0 !important;
+  justify-content: flex-start !important;
+  color: black;
+  opacity: 0.8;
+  text-decoration: none !important;
+}
+
+.drawerFooterButton:hover {
+  text-decoration: none !important;
+  opacity: 1;
+}
+
+.notificationBox {
+  position: relative;
+  top: -3px;
+}
+
+.redAlert {
+  position: absolute;
+  opacity: 1;
+  right: 0;
+  top: 5px;
+  width: 15px;
+  z-index: 10;
+}
+
+.giftIcon {
+  width: 30px;
+  opacity: 0.5;
+}
+
+.notificationContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  padding: 0.5rem 0.5rem;
+  width: 100%;
+}
+
+.notificationTitleContainer {
+  justify-content: flex-start !important;
+  align-items: flex-start !important;
+}
+
+.notificationTitle {
+  font-family: "Poppins";
+  font-weight: 700;
+  color: black;
+}
+
+.notificationSubtitle {
+  margin-top: 0 !important;
+  font-family: "Poppins";
+  font-weight: 400;
+  color: black;
+  opacity: 0.5;
+}
+
+.transactionRowContainerSelected {
+  background: rgba(255, 255, 255, 0.1);
+}

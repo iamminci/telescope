@@ -16,3 +16,9 @@ a {
 * {
   box-sizing: border-box;
 }
+
+.chakra-modal__content-container {
+  width: 50vw !important;
+  right: 0 !important;
+  left: 60% !important;
+}
