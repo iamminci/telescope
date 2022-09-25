@@ -28,12 +28,12 @@ function Home() {
   const isMobile = width <= 768;
 
   function handleInputChange(e: any) {
-    console.log("e:", e.target.value);
     setInputValue(e.target.value);
   }
 
   function handleNavigation(e: any) {
     e.preventDefault();
+    if (inputValue.length === 0) return;
     router.push(`/address/${inputValue}`);
   }
 

@@ -1,4 +1,5 @@
 import { Html, Head, Main, NextScript } from "next/document";
+import Script from "next/script";
 
 export default function Document() {
   return (
@@ -18,6 +19,36 @@ export default function Document() {
       <body>
         <Main />
         <NextScript />
+        <Script
+          src="//unpkg.com/react/umd/react.production.min.js"
+          strategy="beforeInteractive"
+        ></Script>
+        <Script
+          src="//unpkg.com/react-dom/umd/react-dom.production.min.js"
+          strategy="beforeInteractive"
+        ></Script>
+        <Script
+          src="//unpkg.com/babel-standalone"
+          strategy="beforeInteractive"
+        ></Script>
+
+        <Script src="//unpkg.com/three" strategy="beforeInteractive"></Script>
+        <Script
+          src="//unpkg.com/three/examples/js/postprocessing/Pass.js"
+          strategy="beforeInteractive"
+        ></Script>
+        <Script
+          src="//unpkg.com/three/examples/js/shaders/CopyShader.js"
+          strategy="beforeInteractive"
+        ></Script>
+        <Script
+          src="//unpkg.com/three/examples/js/shaders/LuminosityHighPassShader.js"
+          strategy="beforeInteractive"
+        ></Script>
+        <Script
+          src="//unpkg.com/three/examples/js/postprocessing/UnrealBloomPass.js"
+          strategy="beforeInteractive"
+        ></Script>
       </body>
     </Html>
   );

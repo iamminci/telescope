@@ -199,6 +199,26 @@
   overflow-y: scroll;
 }
 
+/* width */
+.tokenTableContainer::-webkit-scrollbar {
+  width: 5px;
+}
+
+/* Track */
+.tokenTableContainer::-webkit-scrollbar-track {
+  background: #8b8b8b;
+}
+
+/* Handle */
+.tokenTableContainer::-webkit-scrollbar-thumb {
+  background: rgb(74, 74, 74);
+}
+
+/* Handle on hover */
+.tokenTableContainer::-webkit-scrollbar-thumb:hover {
+  background: rgb(56, 56, 56);
+}
+
 .tokenRowContainer {
   width: 80%;
   justify-content: space-between !important;
@@ -210,6 +230,8 @@
   width: 48px;
   height: 48px;
 
+  border-radius: 50%;
+
   opacity: 0.9;
   filter: drop-shadow(0px 0px 6px rgba(255, 255, 255, 0.25));
 }
@@ -218,6 +240,26 @@
   width: 100%;
   overflow-y: scroll;
   max-height: "300px";
+}
+
+/* width */
+.tableContainer::-webkit-scrollbar {
+  width: 5px;
+}
+
+/* Track */
+.tableContainer::-webkit-scrollbar-track {
+  background: #8b8b8b;
+}
+
+/* Handle */
+.tableContainer::-webkit-scrollbar-thumb {
+  background: rgb(74, 74, 74);
+}
+
+/* Handle on hover */
+.tableContainer::-webkit-scrollbar-thumb:hover {
+  background: rgb(56, 56, 56);
 }
 
 .transactionRowContainer {

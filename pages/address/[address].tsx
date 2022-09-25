@@ -32,10 +32,17 @@ import {
   convertCamelCaseToWords,
   removeWhitespaceAroundString,
 } from "@utils/helpers";
-import { formatUnits, formatEther, parseEther } from "ethers/lib/utils";
+import {
+  formatUnits,
+  formatEther,
+  parseEther,
+  isAddress,
+} from "ethers/lib/utils";
 import Transaction from "@components/Transaction";
 import { Network, Alchemy } from "alchemy-sdk";
 import { Tooltip } from "@chakra-ui/react";
+import { provider } from "@utils/provider";
+import { addressWhitelist } from "@data/addressWhitelist";
 
 const settings = {
   apiKey: "ciWZ5nOwLHUnAsHaCH7Flrs4lIfMVABb", // Replace with your Alchemy API Key.
@@ -43,88 +50,10 @@ const settings = {
 };
 const alchemy = new Alchemy(settings);
 
-const tokenWhitelist: { [key: string]: any } = {
-  "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48": "USDC",
-  "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2": "WETH",
-  "0x6b175474e89094c44da98b954eedeac495271d0f": "DAI",
-  "0xc18360217d8f7ab5e7c516566761ea12ce7f9d72": "ENS",
-};
-
-// WHITELIST BINANCE COINBASE PROPERLY
-export const addressWhitelist: { [key: string]: any } = {
-  "0x7d655c57f71464b6f83811c55d84009cd9f5221c": "Gitcoin: Bulk Checkout",
-  "0xa6b71e26c5e0845f74c812102ca7114b6a896ab2": "Gnosis Safe: 1.3.0",
-  "0x7d2768de32b0b80b7a3454c06bdac94a69ddc7a9": "Aave V3: Lending Pool",
-  "0x283af0b28c62c092c9727f1ee09c02ca627eb7f5": "ENS Registrar",
-  "0x6170b3c3a54c3d8c854934cbc314ed479b2b29a3": "Zora V3",
-  "0x00000000006c3852cbef3e08e8df289169ede581": "Seaport 1.1",
-  "0x68b3465833fb72a70ecdf485e0e4c7bd8665fc45": "Uniswap V3: Router",
-  "0x881d40237659c251811cec9c364ef91dc08d300c": "Metamask: Swap Router",
-  "0xa0c68c638235ee32657e8f720a23cec1bfc77c77": "Polygon Bridge",
-  "0xd551234ae421e3bcba99a0da6d736074f22192ff": "Binance",
-  "0xddfabcdc4d8ffc6d5beaf154f18b778f892a0740": "Coinbase",
-  "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2": "Token: WETH",
-  "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48": "Token: USDC",
-  "0xd90e2f925da726b50c4ed8d0fb90ad053324f31b": "Tornado Cash",
-};
-
-const tokenData = [
-  {
-    name: "USDC",
-    contractAddress: "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
-    logo: "https://static.alchemyapi.io/images/assets/3408.png",
-    tokenBalance: 1457.66,
-    fiatBalance: 1457.66,
-  },
-  {
-    name: "WETH",
-    contractAddress: "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
-    logo: "https://static.alchemyapi.io/images/assets/2396.png",
-    tokenBalance: 0.31,
-    fiatBalance: 462.93,
-  },
-  {
-    name: "ETH",
-    contractAddress: "",
-    logo: "/eth.png",
-    tokenBalance: 1.56,
-    fiatBalance: 2329.18,
-  },
-  {
-    name: "DAI",
-    contractAddress: "0x6b175474e89094c44da98b954eedeac495271d0f",
-    logo: "https://static.alchemyapi.io/images/assets/4943.png",
-    tokenBalance: 903.42,
-    fiatBalance: 903.47,
-  },
-  {
-    name: "ENS",
-    contractAddress: "0xc18360217d8f7ab5e7c516566761ea12ce7f9d72",
-    logo: "https://static.alchemyapi.io/images/assets/13855.png",
-    tokenBalance: 26.26,
-    fiatBalance: 392.12,
-  },
-];
-
-const sortedTokenData = tokenData.sort((a, b) => b.fiatBalance - a.fiatBalance);
-
-const aggregateBalance = tokenData.reduce(
-  (acc, token) => acc + token.fiatBalance,
-  0
-);
-
 const gradientArray = new Gradient()
   .setColorGradient("#A9480C", "#FBC3A1")
   .setMidpoint(5)
   .getColors();
-
-const data = tokenData.map((token: any, idx: number) => {
-  return {
-    label: token.name,
-    value: token.fiatBalance,
-    color: gradientArray[idx],
-  };
-});
 
 function handleClickCell(hash: string) {
   toast(<CustomToast txnHash={hash} />, {
@@ -141,6 +70,7 @@ function handleClickCell(hash: string) {
 function Address() {
   const [showZeroValueTxns, setShowZeroValueTxns] = useState(false);
   const [transactions, setTransactions] = useState<{ [key: string]: any }>({});
+  const [ENS, setENS] = useState("");
   const [transactionsMap, setTransactionsMap] = useState<{
     [key: string]: any;
   }>({});
@@ -160,7 +90,6 @@ function Address() {
   function processTransactions(data: any) {
     const processedTxns: { [key: string]: any } = {};
     const processedTxnsFlat: { [key: string]: any } = {};
-    console.log(data);
 
     for (let i = 0; i < data.length; i++) {
       const txn = data[i];
@@ -237,42 +166,92 @@ function Address() {
   }
 
   useEffect(() => {
-    async function fetchTokenBalances() {
-      if (address !== "0xa109BC6F8292B52A6f89e8Fc5EABF2947EC31bFA") return;
-      const etherBalance = await alchemy.core.getBalance(address as string);
-      console.log(formatEther(etherBalance));
-      const { tokenBalances: balances } = await alchemy.core.getTokenBalances(
-        address as string,
-        "DEFAULT_TOKENS" as any
-      );
+    async function fetchPrimaryENS() {
+      if (!isAddress(address as string)) return;
+      const primaryENS = await provider.lookupAddress(address as string);
+      setENS(primaryENS);
+    }
 
-      const filterWithBalances: any[] = balances.filter(
+    async function fetchCovalentBalances() {
+      if (!isAddress(address as string)) return;
+      const url = `https://api.covalenthq.com/v1/1/address/${address}/balances_v2/?key=ckey_7531eb22908347afabcae0d8585`;
+      const response = await fetch(url);
+      const data = await response.json();
+      const tokenBalances = data.data.items;
+      for (let i = 0; i < tokenBalances.length; i++) {
+        const token = tokenBalances[i];
+        token.formattedBalance = formatUnits(
+          token.balance,
+          token.contract_decimals
+        );
+      }
+      const filteredTokenBalance = tokenBalances.filter(
+        (token: any) => token.quote > 0.1
+      );
+      setTokenBalances(filteredTokenBalance);
+    }
+
+    async function fetchTokenBalances() {
+      if (!isAddress(address as string)) return;
+
+      // ETHER BALANCE
+      const etherBalance = await alchemy.core.getBalance(address as string);
+
+      // ERC20 BALANCES
+      const { tokenBalances: ERC20Balances } =
+        await alchemy.core.getTokenBalances(
+          address as string,
+          "DEFAULT_TOKENS" as any
+        );
+
+      const filterWithBalances: any[] = ERC20Balances.filter(
         (token: any) => Number(token.tokenBalance) > 0
       );
 
-      filterWithBalances.forEach((token) => {
-        if (
-          token.contractAddress === "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
-        ) {
-          token.formattedBalance = formatUnits(token.tokenBalance, 6);
-        } else {
-          token.formattedBalance = formatUnits(token.tokenBalance, 18);
-        }
-        console.log("token.formattedBalance: ", token.formattedBalance);
-      });
+      // PROCESS ERC20 BALANCES W METADATA
+      for (let i = 0; i < filterWithBalances.length; i++) {
+        const token = filterWithBalances[i];
+        const { decimals, logo, name, symbol } =
+          await alchemy.core.getTokenMetadata(token.contractAddress);
+        token.formattedBalance = formatUnits(token.tokenBalance, decimals);
+        token.decimals = decimals;
+        token.logo = logo;
+        token.name = name;
+        token.symbol = symbol;
+      }
 
+      // ADD ETHER BALANCE INTO LIST
       filterWithBalances.push({
         contractAddress: "",
-        tokenBalance: formatEther(etherBalance),
+        name: "Ethereum",
+        symbol: "ETH",
+        logo: "/eth.png",
+        tokenBalance: etherBalance,
+        formattedBalance: formatEther(etherBalance),
       });
 
-      console.log("filterWithBalances", filterWithBalances);
+      // TODO: sort by fiat balance
+      filterWithBalances.sort((a: any, b: any) => {
+        return Number(b.tokenBalance) - Number(a.tokenBalance);
+      });
+
+      // console.log("filterWithBalances", filterWithBalances);
 
       setTokenBalances(filterWithBalances);
     }
     processTransactions(txnData);
-    fetchTokenBalances();
+    fetchPrimaryENS();
+    // fetchTokenBalances();
+    fetchCovalentBalances();
   }, [address]);
+
+  const chartData = tokenBalances.map((token: any, idx: number) => {
+    return {
+      label: token.contract_ticker_symbol,
+      value: Number(token.quote),
+      color: gradientArray[idx],
+    };
+  });
 
   if (address !== "0xa109BC6F8292B52A6f89e8Fc5EABF2947EC31bFA") {
     return (
@@ -319,9 +298,9 @@ function Address() {
         <HStack className={styles.titleContainer}>
           <HStack>
             <Text className={styles.header}>Address</Text>
-            <Text
-              className={styles.address}
-            >{`${address} (iamminci.eth)`}</Text>
+            <Text className={styles.address}>
+              {ENS ? `${ENS} (${address})` : address}
+            </Text>
           </HStack>
           <Button
             className={styles.graphViewButton}
@@ -335,40 +314,38 @@ function Address() {
           <VStack className={styles.overviewContainer}>
             <VStack className={styles.overviewHeaderContainer}>
               <Text className={styles.header}>Total Balance</Text>
-              <Text
-                className={styles.fiatBalance}
-              >{`$${aggregateBalance.toFixed(2)}`}</Text>
-              <Text className={styles.ethBalance}>3.82 ETH</Text>
+              <Text className={styles.fiatBalance}>TODO: $5545.36</Text>
+              <Text className={styles.ethBalance}>TODO: 3.82 ETH</Text>
             </VStack>
             <Box className={styles.pieChartContainer} w="300px">
-              <PieChart data={data} />
+              <PieChart data={chartData} />
             </Box>
             <Box className={styles.tokenTableContainer}>
               <TableContainer>
                 <Table variant="unstyled">
                   <Tbody>
-                    {sortedTokenData.map(
+                    {tokenBalances.map(
                       ({
-                        name,
-                        contractAddress,
-                        logo,
-                        tokenBalance,
-                        fiatBalance,
+                        contract_ticker_symbol,
+                        contract_address,
+                        logo_url,
+                        quote,
+                        formattedBalance,
                       }) => (
-                        <Tr key={contractAddress}>
+                        <Tr key={contract_address}>
                           <Td padding={"0.5rem 0.2rem"}>
                             {" "}
                             <Image
-                              src={logo}
+                              src={logo_url}
                               alt="token logo"
                               className={styles.tokenLogo}
                             ></Image>
                           </Td>
 
-                          <Td>{name}</Td>
+                          <Td>{contract_ticker_symbol}</Td>
 
-                          <Td>{tokenBalance}</Td>
-                          <Td>${fiatBalance}</Td>
+                          <Td>{Number(formattedBalance).toFixed(2)}</Td>
+                          <Td>${quote.toFixed(2)}</Td>
                         </Tr>
                       )
                     )}
@@ -376,31 +353,6 @@ function Address() {
                 </Table>
               </TableContainer>
             </Box>
-            {/* <VStack className={styles.tokenContainer}>
-              {sortedTokenData.map(
-                ({
-                  name,
-                  contractAddress,
-                  logo,
-                  tokenBalance,
-                  fiatBalance,
-                }) => (
-                  <HStack
-                    key={contractAddress}
-                    className={styles.tokenRowContainer}
-                  >
-                    <Image
-                      src={logo}
-                      alt="token logo"
-                      className={styles.tokenLogo}
-                    ></Image>
-                    <Text>{name}</Text>
-                    <Text>{tokenBalance}</Text>
-                    <Text>${fiatBalance}</Text>
-                  </HStack>
-                )
-              )}
-            </VStack> */}
           </VStack>
           <Box className={styles.contentDivider} />
           <VStack className={styles.transactionContainer}>

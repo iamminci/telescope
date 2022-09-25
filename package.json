@@ -22,13 +22,15 @@
     "react-dom": "18.2.0",
     "react-force-graph": "^1.41.14",
     "react-minimal-pie-chart": "^8.3.0",
-    "react-toastify": "^9.0.8"
+    "react-toastify": "^9.0.8",
+    "three": "^0.144.0"
   },
   "devDependencies": {
     "@types/javascript-color-gradient": "^2.4.0",
     "@types/node": "18.7.18",
     "@types/react": "18.0.20",
     "@types/react-dom": "18.0.6",
+    "@types/three": "^0.144.0",
     "eslint": "8.23.1",
     "eslint-config-next": "12.3.0",
     "typescript": "4.8.3"
