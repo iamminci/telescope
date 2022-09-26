@@ -5,9 +5,6 @@ import dynamic from "next/dynamic";
 const Graph = dynamic(() => import("@components/Graph"), {
   ssr: false,
 });
-const ThreeDGraph = dynamic(() => import("@components/3DGraph"), {
-  ssr: false,
-});
 
 const Home = () => {
   if (typeof window === "undefined") return null;
@@ -15,8 +12,7 @@ const Home = () => {
   return (
     <div className={styles.container}>
       <Navbar />
-      {/* <Graph /> */}
-      <ThreeDGraph />
+      <Graph />
     </div>
   );
 };

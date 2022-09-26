@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { Box } from "@chakra-ui/react";
 
 const ProgressBar = (props) => {
