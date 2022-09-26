@@ -1,12 +1,12 @@
 # TELESCOPE: An Ethereum Transaction Explorer
 
 ![](public/landing.png)
-Telescope is an Ethereum-native Transaction Explorer built to provide an enhanced user experience understanding the movement of funds on-chain.
+Telescope is a cross-chain EVM Transaction Explorer built to provide an enhanced user experience understanding the movement of funds on-chain.
 
-This project was built as a submission to the 2022 ETHBerlin Hackathon.
+This project was built as a submission to the 2022 ETHOnline Hackathon.
 
 - Check out the [Live Deployment](https://telescope.ooo)
-- Check out the [Walkthrough Demo](https://vimeo.com/750807868)
+- Check out the [Walkthrough Demo](https://ethglobal.com/showcase/telescope-144tq)
 
 ## The problem Telescope solves
 
@@ -20,9 +20,9 @@ Therefore, what I’ve built during this hackathon is Telescope, what I call a "
 
 Easy-to-follow account overview and transactions list (like a web2 banking app)
 Intuitive transaction detail page showcasing complex contract calls with ease
+Intuitive bridging transaction progress page showcasing bridging progress
 Visualization of accounts and transactions in an aesthetic graph view
 Visualization of token and NFT transfers to better track movement of funds
-3D Visualization of accounts and transactions to make this all the more "based"
 
 ## Challenges I ran into
 
@@ -42,6 +42,6 @@ Unfortunately I had to leave a lot of the features at the "proof of concept" sta
 
 - NextJS
 - Chakra UI
-- Etherscan API
-- Alchemy API
+- QuickNode Token API
+- Covalent Transactions API
 - react-force-graph
