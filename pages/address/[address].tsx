@@ -44,6 +44,10 @@ import { Network, Alchemy } from "alchemy-sdk";
 import { Tooltip } from "@chakra-ui/react";
 import { provider } from "@utils/provider";
 import { addressWhitelist } from "@data/addressWhitelist";
+import tokenBalances from "@data/balances.json";
+import sampleTxn from "@data/sample.json";
+import ProgressBar from "@components/ProgressBar";
+import Transaction2 from "@components/Transaction2";
 
 // const settings = {
 //   apiKey: "ciWZ5nOwLHUnAsHaCH7Flrs4lIfMVABb", // Replace with your Alchemy API Key.
@@ -74,9 +78,16 @@ function Main() {
     return <NullState />;
   }
 
-  // if (!!txn) {
-  //   return <Transaction transaction={transactionsMap[txn as string]} />;
-  // }
+  if (
+    txn ===
+    "0xc5cc9edf359248b6e04b07a5fa97c59a2584867661fc4feb9de3d52cceafcca05"
+  ) {
+    return <Transaction2 />;
+  }
+
+  if (!!txn) {
+    return <Transaction transaction={sampleTxn} />;
+  }
 
   return (
     <div className={styles.container}>
@@ -86,7 +97,8 @@ function Main() {
           <HStack>
             <Text className={styles.header}>Address</Text>
             <Text className={styles.address}>
-              {ENS ? `${ENS} (${address})` : address}
+              {/* {ENS ? `${ENS} (${address})` : address} */}
+              {`iamminci.eth (${address})`}
             </Text>
           </HStack>
           <Button
@@ -112,9 +124,22 @@ function Main() {
 }
 
 function Overview({ address }: any) {
-  const [isLoading, setIsLoading] = useState(true);
-  const [totalBalance, setTotalBalance] = useState(0);
-  const [tokenBalances, setTokenBalances] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  // const [totalBalance, setTotalBalance] = useState(0);
+  // const [tokenBalances, setTokenBalances] = useState<any[]>([]);
+
+  tokenBalances.forEach((token: any) => {
+    token.value = token.quote;
+  });
+
+  const sortedTokenBalances = [...tokenBalances].sort((a, b) => {
+    return b.quote - a.quote;
+  });
+
+  const totalBalance = tokenBalances.reduce(
+    (acc: number, token: any) => acc + token.quote,
+    0
+  );
 
   const mainnetGradient = new Gradient()
     .setColorGradient("#A9480C", "#FBC3A1")
@@ -126,80 +151,91 @@ function Overview({ address }: any) {
     .setMidpoint(5)
     .getColors();
 
+  const optimismGradient = new Gradient()
+    .setColorGradient("#FF0420", "#FF6172")
+    .setMidpoint(5)
+    .getColors();
+
+  // useEffect(() => {
+  //   setIsLoading(true);
+  //   async function fetchMainnetBalances() {
+  //     if (!isAddress(address as string)) return;
+  //     const url = `https://api.covalenthq.com/v1/1/address/${address}/balances_v2/?key=ckey_7531eb22908347afabcae0d8585`;
+  //     const response = await fetch(url);
+  //     const data = await response.json();
+  //     const tokenBalances = data.data.items;
+
+  //     for (let i = 0; i < tokenBalances.length; i++) {
+  //       const token = tokenBalances[i];
+  //       token.formattedBalance = formatUnits(
+  //         token.balance,
+  //         token.contract_decimals
+  //       );
+  //       token.network = "mainnet";
+  //       token.label = token.contract_ticker_symbol;
+  //       token.value = Number(token.quote);
+  //       token.color = mainnetGradient[i];
+  //     }
+
+  //     const filteredTokenBalance = tokenBalances.filter(
+  //       (token: any) => token.quote > 0.1
+  //     );
+
+  //     const aggregateBalance = filteredTokenBalance.reduce(
+  //       (acc: number, token: any) => acc + token.quote,
+  //       0
+  //     );
+
+  //     setTokenBalances(filteredTokenBalance);
+  //     setTotalBalance(aggregateBalance);
+  //   }
+  //   fetchMainnetBalances();
+  //   async function fetchPolygonBalances() {
+  //     if (!isAddress(address as string)) return;
+  //     const url = `https://api.covalenthq.com/v1/137/address/${address}/balances_v2/?key=ckey_7531eb22908347afabcae0d8585`;
+  //     const response = await fetch(url);
+  //     const data = await response.json();
+  //     const tokenBalances = data.data.items;
+
+  //     for (let i = 0; i < tokenBalances.length; i++) {
+  //       const token = tokenBalances[i];
+  //       token.formattedBalance = formatUnits(
+  //         token.balance,
+  //         token.contract_decimals
+  //       );
+  //       token.network = "polygon";
+  //       token.label = token.contract_ticker_symbol;
+  //       token.value = Number(token.quote);
+  //       token.color = polygonGradient[i];
+  //     }
+
+  //     const filteredTokenBalance = tokenBalances.filter(
+  //       (token: any) => token.quote > 0.1
+  //     );
+
+  //     const aggregateBalance = filteredTokenBalance.reduce(
+  //       (acc: number, token: any) => acc + token.quote,
+  //       0
+  //     );
+
+  //     setTokenBalances((prev) =>
+  //       [...prev, ...filteredTokenBalance].sort((a, b) => b.quote - a.quote)
+  //     );
+  //     setTotalBalance((prev) => prev + aggregateBalance);
+  //     setIsLoading(false);
+
+  //     // setTokenBalances(filteredTokenBalance);
+  //     // setTotalBalance(aggregateBalance);
+  //     setIsLoading(false);
+  //   }
+  //   fetchPolygonBalances();
+  // }, [address]);
+
+  const [completed, setCompleted] = useState(0);
+
   useEffect(() => {
-    setIsLoading(true);
-    async function fetchMainnetBalances() {
-      if (!isAddress(address as string)) return;
-      const url = `https://api.covalenthq.com/v1/1/address/${address}/balances_v2/?key=ckey_7531eb22908347afabcae0d8585`;
-      const response = await fetch(url);
-      const data = await response.json();
-      const tokenBalances = data.data.items;
-
-      for (let i = 0; i < tokenBalances.length; i++) {
-        const token = tokenBalances[i];
-        token.formattedBalance = formatUnits(
-          token.balance,
-          token.contract_decimals
-        );
-        token.network = "mainnet";
-        token.label = token.contract_ticker_symbol;
-        token.value = Number(token.quote);
-        token.color = mainnetGradient[i];
-      }
-
-      const filteredTokenBalance = tokenBalances.filter(
-        (token: any) => token.quote > 0.1
-      );
-
-      const aggregateBalance = filteredTokenBalance.reduce(
-        (acc: number, token: any) => acc + token.quote,
-        0
-      );
-
-      setTokenBalances(filteredTokenBalance);
-      setTotalBalance(aggregateBalance);
-    }
-    fetchMainnetBalances();
-    async function fetchPolygonBalances() {
-      if (!isAddress(address as string)) return;
-      const url = `https://api.covalenthq.com/v1/137/address/${address}/balances_v2/?key=ckey_7531eb22908347afabcae0d8585`;
-      const response = await fetch(url);
-      const data = await response.json();
-      const tokenBalances = data.data.items;
-
-      for (let i = 0; i < tokenBalances.length; i++) {
-        const token = tokenBalances[i];
-        token.formattedBalance = formatUnits(
-          token.balance,
-          token.contract_decimals
-        );
-        token.network = "polygon";
-        token.label = token.contract_ticker_symbol;
-        token.value = Number(token.quote);
-        token.color = polygonGradient[i];
-      }
-
-      const filteredTokenBalance = tokenBalances.filter(
-        (token: any) => token.quote > 0.1
-      );
-
-      const aggregateBalance = filteredTokenBalance.reduce(
-        (acc: number, token: any) => acc + token.quote,
-        0
-      );
-
-      setTokenBalances((prev) =>
-        [...prev, ...filteredTokenBalance].sort((a, b) => b.quote - a.quote)
-      );
-      setTotalBalance((prev) => prev + aggregateBalance);
-      setIsLoading(false);
-
-      // setTokenBalances(filteredTokenBalance);
-      // setTotalBalance(aggregateBalance);
-      setIsLoading(false);
-    }
-    fetchPolygonBalances();
-  }, [address]);
+    setInterval(() => setCompleted(Math.floor(Math.random() * 100) + 1), 2000);
+  }, []);
 
   return isLoading ? (
     <Spinner color="white" />
@@ -209,6 +245,7 @@ function Overview({ address }: any) {
         <Text className={styles.header}>Total Balance</Text>
         <Text className={styles.fiatBalance}>${totalBalance.toFixed(2)}</Text>
       </VStack>
+      {/* <ProgressBar bgcolor={"#6a1b9a"} completed={completed} /> */}
       <Box className={styles.pieChartContainer} w="300px">
         <PieChart data={tokenBalances} />
       </Box>
@@ -216,7 +253,7 @@ function Overview({ address }: any) {
         <TableContainer>
           <Table variant="unstyled">
             <Tbody>
-              {tokenBalances.map(
+              {sortedTokenBalances.map(
                 ({
                   contract_ticker_symbol,
                   contract_address,
@@ -235,7 +272,8 @@ function Overview({ address }: any) {
                         ></Image>
                         {network === "polygon" && (
                           <Image
-                            src="/polygon.png"
+                            src="/optimism.png
+                      "
                             alt="token logo"
                             className={styles.networkLogo}
                           ></Image>
@@ -288,6 +326,9 @@ function Transactions({ address }: any) {
       const txn = data[i];
 
       txn.displayAddress = txn.to;
+      if (txn.to.toLowerCase() === address.toLowerCase()) {
+        txn.displayAddress = txn.from;
+      }
 
       if (txn.displayAddress in addressWhitelist) {
         txn.displayName = addressWhitelist[txn.displayAddress];
@@ -494,7 +535,7 @@ function Transactions({ address }: any) {
       <VStack className={styles.transactionContentContainer}>
         <HStack className={styles.transactionTitleContainer}>
           <Text className={styles.header}>Transactions</Text>
-          <HStack>
+          {/* <HStack>
             <Switch
               colorScheme="orange"
               onChange={() => {}}
@@ -503,7 +544,7 @@ function Transactions({ address }: any) {
               }
             />
             <Text>Show Zero Value Transactions</Text>
-          </HStack>
+          </HStack> */}
         </HStack>
         <Box className={styles.tableContainer}>
           <TableContainer>
@@ -520,89 +561,162 @@ function Transactions({ address }: any) {
                 </Tr>
               </Thead>
               <Tbody>
-                {Object.keys(transactions).map((key) =>
-                  transactions[key]
-                    .sort((a: any, b: any) => b.timeStamp - a.timeStamp)
-                    .map(
-                      (
-                        {
-                          formattedDate,
-                          formattedTime,
-                          formattedFunctionName,
-                          displayAddress,
-                          displayName,
-                          formattedValue,
-                          hash,
-                          asset,
-                          txreceipt_status,
-                          network,
-                        }: any,
-                        idx: number
-                      ) =>
-                        (showApprove ||
-                          formattedFunctionName !== "Approve") && (
-                          <Tr
-                            key={hash}
-                            onClick={() => {
-                              if (
-                                hash ===
-                                "0x29e6b5173a1009f8213ac5238f749a8e8a898b752d9221e6543342898caeadfb"
-                              ) {
-                                router.push(`/address/${address}?txn=${hash}`);
-                              } else {
-                                handleClickCell(hash);
-                              }
-                            }}
-                            className={styles.transactionRowContainer}
-                          >
-                            <Td className={styles.transactionCell}>
-                              {idx === 0 ? formattedDate : ""}
-                            </Td>
-                            <Td className={styles.transactionCell}>
-                              {formattedTime}
-                            </Td>
-                            <Tooltip
-                              label={displayName ?? displayAddress}
-                              aria-label="A tooltip"
+                {Object.keys(transactions)
+                  .sort()
+                  .reverse()
+                  .map((key) =>
+                    transactions[key]
+                      .sort((a: any, b: any) => b.timeStamp - a.timeStamp)
+                      .map(
+                        (
+                          {
+                            formattedDate,
+                            formattedTime,
+                            formattedFunctionName,
+                            displayAddress,
+                            displayName,
+                            formattedValue,
+                            hash,
+                            asset,
+                            txreceipt_status,
+                            network,
+                          }: any,
+                          idx: number
+                        ) =>
+                          hash ===
+                          "0xc5cc9edf359248b6e04b07a5fa97c59a2584867661fc4feb9de3d52cceafcca05" ? (
+                            <Tr
+                              key={hash}
+                              onClick={() => {
+                                if (
+                                  hash ===
+                                  "0x29e6b5173a1009f8213ac5238f749a8e8a898b752d9221e6543342898caeadfb"
+                                ) {
+                                  router.push(
+                                    `/address/${address}?txn=${hash}`
+                                  );
+                                } else if (
+                                  hash ===
+                                  "0xc5cc9edf359248b6e04b07a5fa97c59a2584867661fc4feb9de3d52cceafcca05"
+                                ) {
+                                  router.push(
+                                    `/address/${address}?txn=${hash}`
+                                  );
+                                } else {
+                                  handleClickCell(hash);
+                                }
+                              }}
+                              className={styles.transactionRowContainer}
                             >
                               <Td className={styles.transactionCell}>
-                                {displayName
-                                  ? abridgeMethod(displayName)
-                                  : abridgeAddress(displayAddress)}
+                                {idx === 0 ? formattedDate : ""}
                               </Td>
-                            </Tooltip>
-                            <Td className={styles.transactionCell}>
-                              {abridgeMethod(formattedFunctionName)}
-                            </Td>
-                            <Td className={styles.transactionCell}>
-                              {formattedFunctionName !== "Approve"
-                                ? `-${formattedValue} ${asset ?? "ETH"}`
-                                : ""}
-                            </Td>
-                            <Td className={styles.transactionCell}>
-                              {txreceipt_status === "0" ? "Failed" : "Success"}
-                            </Td>
-                            <Td className={styles.transactionCell}>
-                              <VStack className={styles.networkContainer}>
-                                {network === "137" ? (
-                                  <Image
-                                    src="/polygon.png"
-                                    alt="token logo"
-                                    className={styles.networkLogoTxn}
-                                  />
-                                ) : (
+                              <Td className={styles.transactionCell}>
+                                {formattedTime}
+                              </Td>
+                              <Tooltip
+                                label={displayName ?? displayAddress}
+                                aria-label="A tooltip"
+                              >
+                                <Td className={styles.transactionCell}>
+                                  {displayName
+                                    ? abridgeMethod(displayName)
+                                    : abridgeAddress(displayAddress)}
+                                </Td>
+                              </Tooltip>
+                              <Td className={styles.transactionCell}>Bridge</Td>
+                              <Td className={styles.transactionCell}>
+                                0.5 ETH
+                              </Td>
+                              <Td className={styles.transactionCell}>
+                                In Progress
+                              </Td>
+                              <Td className={styles.transactionCell}>
+                                <HStack className={styles.bridgeContainer}>
                                   <Image
                                     src="/eth.png"
                                     alt="token logo"
-                                    className={styles.networkLogoTxn}
+                                    className={styles.bridgeSource}
                                   />
-                                )}
-                              </VStack>
-                            </Td>
-                          </Tr>
-                        )
-                    )
-                )}
+                                  <Box className={styles.bridgeDot}></Box>
+                                  <Box className={styles.bridgeLine}></Box>
+                                  <Image
+                                    src="/optimism.png
+                              "
+                                    alt="token logo"
+                                    className={styles.bridgeDest}
+                                  />
+                                </HStack>
+                              </Td>
+                            </Tr>
+                          ) : (
+                            <Tr
+                              key={hash}
+                              onClick={() => {
+                                if (
+                                  hash ===
+                                  "0x29e6b5173a1009f8213ac5238f749a8e8a898b752d9221e6543342898caeadfb"
+                                ) {
+                                  router.push(
+                                    `/address/${address}?txn=${hash}`
+                                  );
+                                } else {
+                                  handleClickCell(hash);
+                                }
+                              }}
+                              className={styles.transactionRowContainer}
+                            >
+                              <Td className={styles.transactionCell}>
+                                {idx === 0 ? formattedDate : ""}
+                              </Td>
+                              <Td className={styles.transactionCell}>
+                                {formattedTime}
+                              </Td>
+                              <Tooltip
+                                label={displayName ?? displayAddress}
+                                aria-label="A tooltip"
+                              >
+                                <Td className={styles.transactionCell}>
+                                  {displayName
+                                    ? abridgeMethod(displayName)
+                                    : abridgeAddress(displayAddress)}
+                                </Td>
+                              </Tooltip>
+                              <Td className={styles.transactionCell}>
+                                {abridgeMethod(formattedFunctionName)}
+                              </Td>
+                              <Td className={styles.transactionCell}>
+                                {network === "137"
+                                  ? `-${formattedValue} ${asset ?? "ETH"}`
+                                  : `-${formattedValue} ${asset ?? "ETH"}`}
+                              </Td>
+                              <Td className={styles.transactionCell}>
+                                {txreceipt_status === "0"
+                                  ? "Failed"
+                                  : "Success"}
+                              </Td>
+                              <Td className={styles.transactionCell}>
+                                <VStack className={styles.networkContainer}>
+                                  {network === "137" ? (
+                                    <Image
+                                      src="/optimism.png
+                                "
+                                      alt="token logo"
+                                      className={styles.networkLogoTxn}
+                                    />
+                                  ) : (
+                                    <Image
+                                      src="/eth.png"
+                                      alt="token logo"
+                                      className={styles.networkLogoTxn}
+                                    />
+                                  )}
+                                </VStack>
+                              </Td>
+                            </Tr>
+                          )
+                      )
+                  )}
               </Tbody>
             </Table>
           </TableContainer>

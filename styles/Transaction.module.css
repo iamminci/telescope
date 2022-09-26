@@ -247,6 +247,7 @@
   width: 75px;
   height: 75px;
   margin-right: 1rem;
+  border-radius: 50%;
 }
 
 .addressTitleContainer {
@@ -259,6 +260,16 @@
   font-style: normal;
   font-weight: 700;
   font-size: 40px;
+  line-height: 50px;
+
+  color: #ffffff;
+}
+
+.addressTitle2 {
+  font-family: "Bai Jamjuree";
+  font-style: normal;
+  font-weight: 700;
+  font-size: 30px;
   line-height: 50px;
 
   color: #ffffff;
@@ -287,6 +298,13 @@
   line-height: 30px;
 }
 
+.bridgeSection {
+  width: 100%;
+  height: 100%;
+  justify-content: flex-start !important;
+  align-items: flex-start !important;
+}
+
 .overviewHeaderLeftSection {
   width: 30%;
   height: 100%;
@@ -307,6 +325,41 @@
   align-items: flex-start !important;
 }
 
+/* width */
+.detailRightSection::-webkit-scrollbar {
+  width: 5px;
+}
+
+/* Track */
+.detailRightSection::-webkit-scrollbar-track {
+  background: #8b8b8b;
+}
+
+/* Handle */
+.detailRightSection::-webkit-scrollbar-thumb {
+  background: rgb(74, 74, 74);
+}
+
+/* Handle on hover */
+.detailRightSection::-webkit-scrollbar-thumb:hover {
+  background: rgb(56, 56, 56);
+}
+
+.bridgeContainer {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+  margin: 0 !important;
+}
+
+.bridgeContentContainer {
+  width: 100%;
+  height: 100%;
+  padding: 1rem 2rem;
+  z-index: 10;
+}
+
 .executionTraceRow {
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.15);
@@ -324,4 +377,62 @@
   width: 0.2px;
   height: 280px;
   background: #888888;
+}
+
+.bridgingContainer {
+  width: 900px;
+  position: relative;
+}
+
+.bridgeSubtitle1 {
+  font-weight: 700;
+  font-size: 20px;
+  line-height: 25px;
+}
+
+.bridgeSubtitle2 {
+  font-weight: 400;
+  font-size: 20px;
+  line-height: 25px;
+}
+
+.bridgingSubcontainer {
+  position: absolute;
+  left: 50%;
+  top: 150px;
+  transform: translate(-50%, -50%);
+}
+
+.rubyLogo {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+}
+
+.bridgeNetworkLogo {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+}
+
+.bridgeNetworkTitle {
+  font-weight: 700;
+  font-size: 32px;
+  line-height: 40px;
+  width: 150px;
+  text-align: center;
+}
+
+.bridgeSource {
+  position: absolute;
+  left: 0px;
+  top: 50%;
+  z-index: 10;
+}
+
+.bridgeDest {
+  position: absolute;
+  right: 0px;
+  top: 50%;
+  z-index: 10;
 }

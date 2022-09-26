@@ -34,7 +34,11 @@ function Home() {
   function handleNavigation(e: any) {
     e.preventDefault();
     if (inputValue.length === 0) return;
-    router.push(`/address/${inputValue}`);
+    if (inputValue === "iamminci.eth") {
+      router.push(`/address/0xa109BC6F8292B52A6f89e8Fc5EABF2947EC31bFA`);
+    } else {
+      router.push(`/address/${inputValue}`);
+    }
   }
 
   if (isMobile) {
