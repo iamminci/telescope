@@ -1,4 +1,4 @@
-# TELESCOPE: An Ethereum Transaction Explorer
+# TELESCOPE: An EVM Transaction Explorer
 
 ![](public/landing.png)
 Telescope is a cross-chain EVM Transaction Explorer built to provide an enhanced user experience understanding the movement of funds on-chain.
