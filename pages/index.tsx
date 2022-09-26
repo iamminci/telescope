@@ -28,13 +28,17 @@ function Home() {
   const isMobile = width <= 768;
 
   function handleInputChange(e: any) {
-    console.log("e:", e.target.value);
     setInputValue(e.target.value);
   }
 
   function handleNavigation(e: any) {
     e.preventDefault();
-    router.push(`/address/${inputValue}`);
+    if (inputValue.length === 0) return;
+    if (inputValue === "iamminci.eth") {
+      router.push(`/address/0xa109BC6F8292B52A6f89e8Fc5EABF2947EC31bFA`);
+    } else {
+      router.push(`/address/${inputValue}`);
+    }
   }
 
   if (isMobile) {

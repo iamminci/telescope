@@ -4,25 +4,10 @@ import styles from "@styles/Graph.module.css";
 import data from "@data/graphdata.json";
 import data2 from "@data/graphdata2.json";
 import data3 from "@data/graphdata3.json";
-import { Box, HStack, useDisclosure, Input } from "@chakra-ui/react";
+import { HStack, useDisclosure, Input } from "@chakra-ui/react";
 import { useEffect, useRef, useState } from "react";
 import { Sidebar } from "./Sidebar";
 import { Search2Icon } from "@chakra-ui/icons";
-// import etherscan from "../etherscan.json";
-
-// console.log("ethereum", etherscan);
-
-function genRandomTree(N = 300, reverse = false) {
-  return {
-    nodes: [...new Array(N).fill(0)].map((i) => ({ id: i })),
-    links: [...new Array(N).fill(0)]
-      .filter((id) => id)
-      .map((id) => ({
-        [reverse ? "target" : "source"]: id,
-        [reverse ? "source" : "target"]: Math.round(Math.random() * (id - 1)),
-      })),
-  };
-}
 
 function Graph() {
   const [graphData, setGraphData] = useState(data);
@@ -88,10 +73,6 @@ function Graph() {
 
   const handleClick = (node) => {
     onOpen();
-    // Aim at node from outside it
-    const distance = 40;
-    const distRatio = 1 + distance / Math.hypot(node.x, node.y);
-    // fgRef.current.zoomToFit(1000, 100);
 
     fgRef.current.centerAt(
       node.x + 20,
@@ -99,7 +80,6 @@ function Graph() {
       500 // ms transition duration
     );
     fgRef.current.zoom(8, 500);
-    // setGraphData(data2);
     setIsClicked(true);
   };
 
@@ -114,17 +94,12 @@ function Graph() {
 
   function handleSubmit(e: any) {
     e.preventDefault();
-    // Aim at node from outside it
-    const distance = 40;
-    // fgRef.current.zoomToFit(1000, 100);
-
     fgRef.current.centerAt(
       60,
       65,
       500 // ms transition duration
     );
     fgRef.current.zoom(8, 500);
-    // setGraphData(data2);
     setIsClicked2(true);
   }
 
@@ -229,7 +204,6 @@ function Graph() {
           onNodeClick={handleClick}
           cooldownTicks={20}
           onLinkHover={handleLinkHover}
-          // onEngineStop={() => fgRef.current.zoomToFit(1000, 100)}
         />
       )}
       <HStack
@@ -252,36 +226,6 @@ function Graph() {
       <Sidebar isOpen={isOpen} onClose={onClose} isHover={isHover} />
     </>
   );
-  // <ForceGraph2D
-  //   graphData={data}
-  //   nodeLabel="name"
-  //   nodeAutoColorBy="group"
-  //   // linkDirectionalParticles="value"
-  //   // linkDirectionalParticleWidth={(d) => d.value * 10}
-  //   // linkDirectionalParticleSpeed={(d) => d.value * 0.01}{
-  //   linkDirectionalArrowLength={5}
-  //   linkDirectionalArrowRelPos={1}
-  //   linkColor={() => "rgba(255,255,255,0.8)"}
-  //   linkDirectionalArrowColor={() => "rgba(255,255,255,0.8)"}
-  //   // linkWidth={(link) => link.value * 20}
-  //   nodeCanvasObject={(node, ctx) => nodePaint(node, getColor(node.id), ctx)}
-  //   nodePointerAreaPaint={nodePaint}
-  //   onNodeDragEnd={(node) => {
-  //     node.fx = node.x;
-  //     node.fy = node.y;
-  //   }}
-  //   ref={fgRef}
-  //   cooldownTicks={20}
-  //   // onEngineStop={() => fgRef.current.zoomToFit(400)}
-  // />
-  // <Box className={styles.graphContainer}>
-  // <ForceGraph2D
-  //   ref={fgRef}
-  //   graphData={genRandomTree()}
-  //   cooldownTicks={100}
-  //   onEngineStop={() => fgRef.current.zoomToFit(400)}
-  // />
-  // </Box>
 }
 
 export default Graph;

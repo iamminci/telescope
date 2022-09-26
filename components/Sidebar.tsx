@@ -21,6 +21,7 @@ import {
   TableContainer,
   Button,
 } from "@chakra-ui/react";
+import { addressWhitelist } from "@data/addressWhitelist";
 import styles from "@styles/Navbar.module.css";
 import {
   abridgeAddress,
@@ -30,7 +31,6 @@ import {
 } from "@utils/helpers";
 import { formatEther } from "ethers/lib/utils";
 import Link from "next/link";
-import { addressWhitelist } from "pages/address/[address]";
 import { useEffect, useState } from "react";
 
 type SidebarProps = {
@@ -196,7 +196,6 @@ export const Sidebar = ({ isOpen, onClose, isHover }: SidebarProps) => {
   function processTransactions(data: any) {
     const processedTxns: { [key: string]: any } = {};
     const processedTxnsFlat: { [key: string]: any } = {};
-    console.log(data);
 
     for (let i = 0; i < data.length; i++) {
       const txn = data[i];
