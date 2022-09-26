@@ -135,7 +135,7 @@
     "network": "polygon",
     "label": "USDC",
     "value": 30.725662,
-    "color": "#FF6172"
+    "color": "#5308c3"
   },
   {
     "contract_decimals": 18,
@@ -155,7 +155,7 @@
     "quote_24h": 3.2512457,
     "nft_data": null,
     "formattedBalance": "0.37",
-    "network": "polygon",
+    "network": "optimism",
     "label": "ETH",
     "value": 3.1255615,
     "color": "#FF0420"

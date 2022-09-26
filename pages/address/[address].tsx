@@ -272,6 +272,14 @@ function Overview({ address }: any) {
                         ></Image>
                         {network === "polygon" && (
                           <Image
+                            src="/polygon.png
+                      "
+                            alt="token logo"
+                            className={styles.networkLogo}
+                          ></Image>
+                        )}
+                        {network === "optimism" && (
+                          <Image
                             src="/optimism.png
                       "
                             alt="token logo"
@@ -398,129 +406,6 @@ function Transactions({ address }: any) {
     setTransactions(processedTxns);
     setTransactionsMap(processedTxnsFlat);
   }
-
-  // function processTransactions(data: any) {
-  //   const processedTxns: { [key: string]: any } = {};
-  //   const processedTxnsFlat: { [key: string]: any } = {};
-
-  //   for (let i = 0; i < data.length; i++) {
-  //     const txn = data[i];
-
-  //     let displayAddress;
-
-  //     if (txn.from_address.toLowerCase() === address.toLowerCase()) {
-  //       displayAddress = txn.to_address;
-  //     } else {
-  //       displayAddress = txn.from_address;
-  //     }
-
-  //     txn.displayAddress = displayAddress;
-
-  //     if (txn.displayAddress in addressWhitelist) {
-  //       txn.displayName = addressWhitelist[txn.displayAddress];
-  //     }
-
-  //     if (txn.log_events.length > 0) {
-  //       txn.log_events.forEach((event: any) => {
-  //         if (event.decoded?.name === "Transfer") {
-  //           txn.formattedFunctionName = "Transfer";
-  //           txn.transferAmount = event.decoded.params[2].value;
-  //           txn.transferAmount = formatUnits(
-  //             txn.transferAmount,
-  //             txn.contract_decimals
-  //           );
-  //         } else {
-  //           txn.formattedFunctionName = event.decoded?.name;
-  //         }
-  //       });
-  //       txn.formattedValue = Number(
-  //         formatUnits(txn.value, txn.contract_decimals)
-  //       ).toFixed(2);
-  //     } else {
-  //       txn.formattedFunctionName = "Transfer";
-  //       txn.formattedValue = txn.value_quote.toFixed;
-  //     }
-
-  //     // if (!("timeStamp" in txn)) {
-  //     //   const time = txn.metadata.blockTimestamp;
-  //     //   const date = new Date(time);
-  //     //   const newTimestamp = date.getTime() / 1000;
-  //     //   txn.timeStamp = newTimestamp;
-  //     // }
-
-  //     // let formattedFunctionName = !txn.functionName
-  //     //   ? "Transfer"
-  //     //   : txn.functionName;
-
-  //     // if (txn.category === "erc20") {
-  //     //   formattedFunctionName = "Transfer (ERC20)";
-  //     // }
-
-  //     // if (txn.category === "erc721") {
-  //     //   formattedFunctionName = "Transfer (NFT)";
-  //     //   txn.formattedValue = "1";
-  //     // }
-
-  //     // if (!formattedFunctionName.startsWith("Transfer")) {
-  //     //   const tempName = formattedFunctionName.split("(")[0];
-  //     //   const tempNameCapitalized =
-  //     //     tempName.charAt(0).toUpperCase() + tempName.slice(1);
-  //     //   const tempNameWords = convertCamelCaseToWords(tempNameCapitalized);
-  //     //   formattedFunctionName = removeWhitespaceAroundString(tempNameWords);
-  //     // }
-
-  //     // txn.formattedFunctionName = formattedFunctionName;
-
-  //     // if (typeof txn.value === "string") {
-  //     //   txn.formattedValue = formatEther(txn.value).toString().substring(0, 5);
-  //     // }
-
-  //     // if (typeof txn.value === "number") {
-  //     //   txn.formattedValue = txn.value.toString().substring(0, 5);
-  //     // }
-
-  //     const date = new Date(txn.block_signed_at);
-  //     const dateStr = date.toDateString();
-
-  //     const dateArr = dateStr.split(" ");
-
-  //     const month = dateArr[1];
-  //     const day = dateArr[2];
-  //     const year = dateArr[3];
-
-  //     const formattedDate = `${month} ${day}, ${year}`;
-
-  //     const formattedTime = date.toLocaleTimeString();
-
-  //     txn.formattedDate = formattedDate;
-  //     txn.formattedTime = formattedTime;
-
-  //     if (processedTxns[formattedDate]) {
-  //       processedTxns[formattedDate].push(txn);
-  //     } else {
-  //       processedTxns[formattedDate] = [txn];
-  //     }
-  //     processedTxnsFlat[txn.hash] = txn;
-  //   }
-  //   setTransactions(processedTxns);
-  //   setTransactionsMap(processedTxnsFlat);
-  // }
-
-  // useEffect(() => {
-  //   // setIsLoading(true);
-  //   async function fetchMainnetTransactions() {
-  //     if (!isAddress(address as string)) return;
-  //     const url = `https://api.covalenthq.com/v1/1/address/${address}/transactions_v2/?quote-currency=USD&format=JSON&block-signed-at-asc=false&no-logs=false&page-number=1&page-size=50&key=ckey_7531eb22908347afabcae0d8585`;
-  //     const response = await fetch(url);
-  //     const data = await response.json();
-
-  //     const txns = data.data.items;
-  //     console.log("TXNS: ", txns);
-
-  //     processTransactions(txns);
-  //   }
-  //   fetchMainnetTransactions();
-  // }, [address]);
 
   useEffect(() => {
     processTransactions(txnData);
@@ -687,7 +572,7 @@ function Transactions({ address }: any) {
                               </Td>
                               <Td className={styles.transactionCell}>
                                 {network === "137"
-                                  ? `-${formattedValue} ${asset ?? "ETH"}`
+                                  ? `-${formattedValue} ${asset ?? "MATIC"}`
                                   : `-${formattedValue} ${asset ?? "ETH"}`}
                               </Td>
                               <Td className={styles.transactionCell}>
@@ -698,6 +583,13 @@ function Transactions({ address }: any) {
                               <Td className={styles.transactionCell}>
                                 <VStack className={styles.networkContainer}>
                                   {network === "137" ? (
+                                    <Image
+                                      src="/polygon.png
+                                "
+                                      alt="token logo"
+                                      className={styles.networkLogoTxn}
+                                    />
+                                  ) : network === "10" ? (
                                     <Image
                                       src="/optimism.png
                                 "
