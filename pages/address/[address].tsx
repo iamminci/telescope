@@ -40,20 +40,13 @@ import {
   isAddress,
 } from "ethers/lib/utils";
 import Transaction from "@components/Transaction";
-import { Network, Alchemy } from "alchemy-sdk";
 import { Tooltip } from "@chakra-ui/react";
 import { provider } from "@utils/provider";
 import { addressWhitelist } from "@data/addressWhitelist";
-import tokenBalances from "@data/balances.json";
 import sampleTxn from "@data/sample.json";
 import ProgressBar from "@components/ProgressBar";
 import Transaction2 from "@components/Transaction2";
-
-// const settings = {
-//   apiKey: "ciWZ5nOwLHUnAsHaCH7Flrs4lIfMVABb", // Replace with your Alchemy API Key.
-//   network: Network.ETH_MAINNET, // Replace with your network.
-// };
-// const alchemy = new Alchemy(settings);
+import { ethers } from "ethers";
 
 function Main() {
   const [ENS, setENS] = useState("");
@@ -125,8 +118,90 @@ function Main() {
 
 function Overview({ address }: any) {
   const [isLoading, setIsLoading] = useState(false);
-  // const [totalBalance, setTotalBalance] = useState(0);
-  // const [tokenBalances, setTokenBalances] = useState<any[]>([]);
+  const [totalBalance, setTotalBalance] = useState(0);
+  const [tokenBalances, setTokenBalances] = useState<any[]>([]);
+
+  useEffect(() => {
+    setIsLoading(true);
+
+    async function fetchQuickNodeTokenBAlances() {
+      // fetch from quicknode
+    }
+    async function fetchMainnetBalances() {
+      if (!isAddress(address as string)) return;
+      const provider = new ethers.providers.JsonRpcProvider(
+        `https://green-sparkling-orb.discover.quiknode.pro/${NEXT_PUBLIC_QUICKNODE_API_KEY}/`
+      );
+      provider.connection.headers = { "x-qn-api-version": 1 };
+      const response = await provider.send("qn_getWalletTokenBalance", {
+        wallet: address,
+      });
+
+      const data = await response.json();
+      const tokenBalances = data.data.items;
+
+      for (let i = 0; i < tokenBalances.length; i++) {
+        const token = tokenBalances[i];
+        token.formattedBalance = formatUnits(
+          token.balance,
+          token.contract_decimals
+        );
+        token.network = "mainnet";
+        token.label = token.contract_ticker_symbol;
+        token.value = Number(token.quote);
+        token.color = mainnetGradient[i];
+      }
+
+      const filteredTokenBalance = tokenBalances.filter(
+        (token: any) => token.quote > 0.1
+      );
+
+      const aggregateBalance = filteredTokenBalance.reduce(
+        (acc: number, token: any) => acc + token.quote,
+        0
+      );
+
+      setTokenBalances(filteredTokenBalance);
+      setTotalBalance(aggregateBalance);
+    }
+    fetchMainnetBalances();
+
+    async function fetchPolygonBalances() {
+      if (!isAddress(address as string)) return;
+      const url = `https://api.covalenthq.com/v1/137/address/${address}/balances_v2/?key=${NEXT_PUBLIC_COVALENY_API_KEY}`;
+      const response = await fetch(url);
+      const data = await response.json();
+      const tokenBalances = data.data.items;
+
+      for (let i = 0; i < tokenBalances.length; i++) {
+        const token = tokenBalances[i];
+        token.formattedBalance = formatUnits(
+          token.balance,
+          token.contract_decimals
+        );
+        token.network = "polygon";
+        token.label = token.contract_ticker_symbol;
+        token.value = Number(token.quote);
+        token.color = polygonGradient[i];
+      }
+
+      const filteredTokenBalance = tokenBalances.filter(
+        (token: any) => token.quote > 0.1
+      );
+
+      const aggregateBalance = filteredTokenBalance.reduce(
+        (acc: number, token: any) => acc + token.quote,
+        0
+      );
+
+      setTokenBalances((prev) =>
+        [...prev, ...filteredTokenBalance].sort((a, b) => b.quote - a.quote)
+      );
+      setTotalBalance((prev) => prev + aggregateBalance);
+      setIsLoading(false);
+    }
+    fetchPolygonBalances();
+  }, [address]);
 
   tokenBalances.forEach((token: any) => {
     token.value = token.quote;
@@ -135,11 +210,6 @@ function Overview({ address }: any) {
   const sortedTokenBalances = [...tokenBalances].sort((a, b) => {
     return b.quote - a.quote;
   });
-
-  const totalBalance = tokenBalances.reduce(
-    (acc: number, token: any) => acc + token.quote,
-    0
-  );
 
   const mainnetGradient = new Gradient()
     .setColorGradient("#A9480C", "#FBC3A1")
@@ -156,81 +226,6 @@ function Overview({ address }: any) {
     .setMidpoint(5)
     .getColors();
 
-  // useEffect(() => {
-  //   setIsLoading(true);
-  //   async function fetchMainnetBalances() {
-  //     if (!isAddress(address as string)) return;
-  //     const url = `https://api.covalenthq.com/v1/1/address/${address}/balances_v2/?key=ckey_7531eb22908347afabcae0d8585`;
-  //     const response = await fetch(url);
-  //     const data = await response.json();
-  //     const tokenBalances = data.data.items;
-
-  //     for (let i = 0; i < tokenBalances.length; i++) {
-  //       const token = tokenBalances[i];
-  //       token.formattedBalance = formatUnits(
-  //         token.balance,
-  //         token.contract_decimals
-  //       );
-  //       token.network = "mainnet";
-  //       token.label = token.contract_ticker_symbol;
-  //       token.value = Number(token.quote);
-  //       token.color = mainnetGradient[i];
-  //     }
-
-  //     const filteredTokenBalance = tokenBalances.filter(
-  //       (token: any) => token.quote > 0.1
-  //     );
-
-  //     const aggregateBalance = filteredTokenBalance.reduce(
-  //       (acc: number, token: any) => acc + token.quote,
-  //       0
-  //     );
-
-  //     setTokenBalances(filteredTokenBalance);
-  //     setTotalBalance(aggregateBalance);
-  //   }
-  //   fetchMainnetBalances();
-  //   async function fetchPolygonBalances() {
-  //     if (!isAddress(address as string)) return;
-  //     const url = `https://api.covalenthq.com/v1/137/address/${address}/balances_v2/?key=ckey_7531eb22908347afabcae0d8585`;
-  //     const response = await fetch(url);
-  //     const data = await response.json();
-  //     const tokenBalances = data.data.items;
-
-  //     for (let i = 0; i < tokenBalances.length; i++) {
-  //       const token = tokenBalances[i];
-  //       token.formattedBalance = formatUnits(
-  //         token.balance,
-  //         token.contract_decimals
-  //       );
-  //       token.network = "polygon";
-  //       token.label = token.contract_ticker_symbol;
-  //       token.value = Number(token.quote);
-  //       token.color = polygonGradient[i];
-  //     }
-
-  //     const filteredTokenBalance = tokenBalances.filter(
-  //       (token: any) => token.quote > 0.1
-  //     );
-
-  //     const aggregateBalance = filteredTokenBalance.reduce(
-  //       (acc: number, token: any) => acc + token.quote,
-  //       0
-  //     );
-
-  //     setTokenBalances((prev) =>
-  //       [...prev, ...filteredTokenBalance].sort((a, b) => b.quote - a.quote)
-  //     );
-  //     setTotalBalance((prev) => prev + aggregateBalance);
-  //     setIsLoading(false);
-
-  //     // setTokenBalances(filteredTokenBalance);
-  //     // setTotalBalance(aggregateBalance);
-  //     setIsLoading(false);
-  //   }
-  //   fetchPolygonBalances();
-  // }, [address]);
-
   const [completed, setCompleted] = useState(0);
 
   useEffect(() => {
@@ -245,7 +240,6 @@ function Overview({ address }: any) {
         <Text className={styles.header}>Total Balance</Text>
         <Text className={styles.fiatBalance}>${totalBalance.toFixed(2)}</Text>
       </VStack>
-      {/* <ProgressBar bgcolor={"#6a1b9a"} completed={completed} /> */}
       <Box className={styles.pieChartContainer} w="300px">
         <PieChart data={tokenBalances} />
       </Box>
@@ -325,54 +319,42 @@ function Transactions({ address }: any) {
     for (let i = 0; i < data.length; i++) {
       const txn = data[i];
 
-      txn.displayAddress = txn.to;
-      if (txn.to.toLowerCase() === address.toLowerCase()) {
-        txn.displayAddress = txn.from;
+      let displayAddress;
+
+      if (txn.from_address.toLowerCase() === address.toLowerCase()) {
+        displayAddress = txn.to_address;
+      } else {
+        displayAddress = txn.from_address;
       }
+
+      txn.displayAddress = displayAddress;
 
       if (txn.displayAddress in addressWhitelist) {
         txn.displayName = addressWhitelist[txn.displayAddress];
       }
 
-      if (!("timeStamp" in txn)) {
-        const time = txn.metadata.blockTimestamp;
-        const date = new Date(time);
-        const newTimestamp = date.getTime() / 1000;
-        txn.timeStamp = newTimestamp;
+      if (txn.log_events.length > 0) {
+        txn.log_events.forEach((event: any) => {
+          if (event.decoded?.name === "Transfer") {
+            txn.formattedFunctionName = "Transfer";
+            txn.transferAmount = event.decoded.params[2].value;
+            txn.transferAmount = formatUnits(
+              txn.transferAmount,
+              txn.contract_decimals
+            );
+          } else {
+            txn.formattedFunctionName = event.decoded?.name;
+          }
+        });
+        txn.formattedValue = Number(
+          formatUnits(txn.value, txn.contract_decimals)
+        ).toFixed(2);
+      } else {
+        txn.formattedFunctionName = "Transfer";
+        txn.formattedValue = txn.value_quote.toFixed;
       }
 
-      let formattedFunctionName = !txn.functionName
-        ? "Transfer"
-        : txn.functionName;
-
-      if (txn.category === "erc20") {
-        formattedFunctionName = "Transfer (ERC20)";
-      }
-
-      if (txn.category === "erc721") {
-        formattedFunctionName = "Transfer (NFT)";
-        txn.formattedValue = "1";
-      }
-
-      if (!formattedFunctionName.startsWith("Transfer")) {
-        const tempName = formattedFunctionName.split("(")[0];
-        const tempNameCapitalized =
-          tempName.charAt(0).toUpperCase() + tempName.slice(1);
-        const tempNameWords = convertCamelCaseToWords(tempNameCapitalized);
-        formattedFunctionName = removeWhitespaceAroundString(tempNameWords);
-      }
-
-      txn.formattedFunctionName = formattedFunctionName;
-
-      if (typeof txn.value === "string") {
-        txn.formattedValue = formatEther(txn.value).toString().substring(0, 5);
-      }
-
-      if (typeof txn.value === "number") {
-        txn.formattedValue = txn.value.toString().substring(0, 5);
-      }
-
-      const date = new Date(txn.timeStamp * 1000);
+      const date = new Date(txn.block_signed_at);
       const dateStr = date.toDateString();
 
       const dateArr = dateStr.split(" ");
@@ -399,128 +381,21 @@ function Transactions({ address }: any) {
     setTransactionsMap(processedTxnsFlat);
   }
 
-  // function processTransactions(data: any) {
-  //   const processedTxns: { [key: string]: any } = {};
-  //   const processedTxnsFlat: { [key: string]: any } = {};
+  useEffect(() => {
+    // setIsLoading(true);
+    async function fetchMainnetTransactions() {
+      if (!isAddress(address as string)) return;
+      const url = `https://api.covalenthq.com/v1/1/address/${address}/transactions_v2/?quote-currency=USD&format=JSON&block-signed-at-asc=false&no-logs=false&page-number=1&page-size=50&key=${NEXT_PUBLIC_COVALENY_API_KEY}`;
+      const response = await fetch(url);
+      const data = await response.json();
 
-  //   for (let i = 0; i < data.length; i++) {
-  //     const txn = data[i];
+      const txns = data.data.items;
+      console.log("TXNS: ", txns);
 
-  //     let displayAddress;
-
-  //     if (txn.from_address.toLowerCase() === address.toLowerCase()) {
-  //       displayAddress = txn.to_address;
-  //     } else {
-  //       displayAddress = txn.from_address;
-  //     }
-
-  //     txn.displayAddress = displayAddress;
-
-  //     if (txn.displayAddress in addressWhitelist) {
-  //       txn.displayName = addressWhitelist[txn.displayAddress];
-  //     }
-
-  //     if (txn.log_events.length > 0) {
-  //       txn.log_events.forEach((event: any) => {
-  //         if (event.decoded?.name === "Transfer") {
-  //           txn.formattedFunctionName = "Transfer";
-  //           txn.transferAmount = event.decoded.params[2].value;
-  //           txn.transferAmount = formatUnits(
-  //             txn.transferAmount,
-  //             txn.contract_decimals
-  //           );
-  //         } else {
-  //           txn.formattedFunctionName = event.decoded?.name;
-  //         }
-  //       });
-  //       txn.formattedValue = Number(
-  //         formatUnits(txn.value, txn.contract_decimals)
-  //       ).toFixed(2);
-  //     } else {
-  //       txn.formattedFunctionName = "Transfer";
-  //       txn.formattedValue = txn.value_quote.toFixed;
-  //     }
-
-  //     // if (!("timeStamp" in txn)) {
-  //     //   const time = txn.metadata.blockTimestamp;
-  //     //   const date = new Date(time);
-  //     //   const newTimestamp = date.getTime() / 1000;
-  //     //   txn.timeStamp = newTimestamp;
-  //     // }
-
-  //     // let formattedFunctionName = !txn.functionName
-  //     //   ? "Transfer"
-  //     //   : txn.functionName;
-
-  //     // if (txn.category === "erc20") {
-  //     //   formattedFunctionName = "Transfer (ERC20)";
-  //     // }
-
-  //     // if (txn.category === "erc721") {
-  //     //   formattedFunctionName = "Transfer (NFT)";
-  //     //   txn.formattedValue = "1";
-  //     // }
-
-  //     // if (!formattedFunctionName.startsWith("Transfer")) {
-  //     //   const tempName = formattedFunctionName.split("(")[0];
-  //     //   const tempNameCapitalized =
-  //     //     tempName.charAt(0).toUpperCase() + tempName.slice(1);
-  //     //   const tempNameWords = convertCamelCaseToWords(tempNameCapitalized);
-  //     //   formattedFunctionName = removeWhitespaceAroundString(tempNameWords);
-  //     // }
-
-  //     // txn.formattedFunctionName = formattedFunctionName;
-
-  //     // if (typeof txn.value === "string") {
-  //     //   txn.formattedValue = formatEther(txn.value).toString().substring(0, 5);
-  //     // }
-
-  //     // if (typeof txn.value === "number") {
-  //     //   txn.formattedValue = txn.value.toString().substring(0, 5);
-  //     // }
-
-  //     const date = new Date(txn.block_signed_at);
-  //     const dateStr = date.toDateString();
-
-  //     const dateArr = dateStr.split(" ");
-
-  //     const month = dateArr[1];
-  //     const day = dateArr[2];
-  //     const year = dateArr[3];
-
-  //     const formattedDate = `${month} ${day}, ${year}`;
-
-  //     const formattedTime = date.toLocaleTimeString();
-
-  //     txn.formattedDate = formattedDate;
-  //     txn.formattedTime = formattedTime;
-
-  //     if (processedTxns[formattedDate]) {
-  //       processedTxns[formattedDate].push(txn);
-  //     } else {
-  //       processedTxns[formattedDate] = [txn];
-  //     }
-  //     processedTxnsFlat[txn.hash] = txn;
-  //   }
-  //   setTransactions(processedTxns);
-  //   setTransactionsMap(processedTxnsFlat);
-  // }
-
-  // useEffect(() => {
-  //   // setIsLoading(true);
-  //   async function fetchMainnetTransactions() {
-  //     if (!isAddress(address as string)) return;
-  //     const url = `https://api.covalenthq.com/v1/1/address/${address}/transactions_v2/?quote-currency=USD&format=JSON&block-signed-at-asc=false&no-logs=false&page-number=1&page-size=50&key=ckey_7531eb22908347afabcae0d8585`;
-  //     const response = await fetch(url);
-  //     const data = await response.json();
-
-  //     const txns = data.data.items;
-  //     console.log("TXNS: ", txns);
-
-  //     processTransactions(txns);
-  //   }
-  //   fetchMainnetTransactions();
-  // }, [address]);
+      processTransactions(txns);
+    }
+    fetchMainnetTransactions();
+  }, [address]);
 
   useEffect(() => {
     processTransactions(txnData);
@@ -764,130 +639,3 @@ function NullState() {
 }
 
 export default withTransition(Main);
-
-// async function fetchTokenBalances() {
-//   if (!isAddress(address as string)) return;
-
-//   // ETHER BALANCE
-//   const etherBalance = await alchemy.core.getBalance(address as string);
-
-//   // ERC20 BALANCES
-//   const { tokenBalances: ERC20Balances } =
-//     await alchemy.core.getTokenBalances(
-//       address as string,
-//       "DEFAULT_TOKENS" as any
-//     );
-
-//   const filterWithBalances: any[] = ERC20Balances.filter(
-//     (token: any) => Number(token.tokenBalance) > 0
-//   );
-
-//   // PROCESS ERC20 BALANCES W METADATA
-//   for (let i = 0; i < filterWithBalances.length; i++) {
-//     const token = filterWithBalances[i];
-//     const { decimals, logo, name, symbol } =
-//       await alchemy.core.getTokenMetadata(token.contractAddress);
-//     token.formattedBalance = formatUnits(token.tokenBalance, decimals);
-//     token.decimals = decimals;
-//     token.logo = logo;
-//     token.name = name;
-//     token.symbol = symbol;
-//   }
-
-//   // ADD ETHER BALANCE INTO LIST
-//   filterWithBalances.push({
-//     contractAddress: "",
-//     name: "Ethereum",
-//     symbol: "ETH",
-//     logo: "/eth.png",
-//     tokenBalance: etherBalance,
-//     formattedBalance: formatEther(etherBalance),
-//   });
-
-//   // TODO: sort by fiat balance
-//   filterWithBalances.sort((a: any, b: any) => {
-//     return Number(b.tokenBalance) - Number(a.tokenBalance);
-//   });
-
-//   // console.log("filterWithBalances", filterWithBalances);
-
-//   setTokenBalances(filterWithBalances);
-// }
-
-// function processTransactions(data: any) {
-//   const processedTxns: { [key: string]: any } = {};
-//   const processedTxnsFlat: { [key: string]: any } = {};
-
-//   for (let i = 0; i < data.length; i++) {
-//     const txn = data[i];
-
-//     txn.displayAddress = txn.to;
-
-//     if (txn.displayAddress in addressWhitelist) {
-//       txn.displayName = addressWhitelist[txn.displayAddress];
-//     }
-
-//     if (!("timeStamp" in txn)) {
-//       const time = txn.metadata.blockTimestamp;
-//       const date = new Date(time);
-//       const newTimestamp = date.getTime() / 1000;
-//       txn.timeStamp = newTimestamp;
-//     }
-
-//     let formattedFunctionName = !txn.functionName
-//       ? "Transfer"
-//       : txn.functionName;
-
-//     if (txn.category === "erc20") {
-//       formattedFunctionName = "Transfer (ERC20)";
-//     }
-
-//     if (txn.category === "erc721") {
-//       formattedFunctionName = "Transfer (NFT)";
-//       txn.formattedValue = "1";
-//     }
-
-//     if (!formattedFunctionName.startsWith("Transfer")) {
-//       const tempName = formattedFunctionName.split("(")[0];
-//       const tempNameCapitalized =
-//         tempName.charAt(0).toUpperCase() + tempName.slice(1);
-//       const tempNameWords = convertCamelCaseToWords(tempNameCapitalized);
-//       formattedFunctionName = removeWhitespaceAroundString(tempNameWords);
-//     }
-
-//     txn.formattedFunctionName = formattedFunctionName;
-
-//     if (typeof txn.value === "string") {
-//       txn.formattedValue = formatEther(txn.value).toString().substring(0, 5);
-//     }
-
-//     if (typeof txn.value === "number") {
-//       txn.formattedValue = txn.value.toString().substring(0, 5);
-//     }
-
-//     const date = new Date(txn.timeStamp * 1000);
-//     const dateStr = date.toDateString();
-
-//     const dateArr = dateStr.split(" ");
-
-//     const month = dateArr[1];
-//     const day = dateArr[2];
-//     const year = dateArr[3];
-
-//     const formattedDate = `${month} ${day}, ${year}`;
-
-//     const formattedTime = date.toLocaleTimeString();
-
-//     txn.formattedDate = formattedDate;
-//     txn.formattedTime = formattedTime;
-
-//     if (processedTxns[formattedDate]) {
-//       processedTxns[formattedDate].push(txn);
-//     } else {
-//       processedTxns[formattedDate] = [txn];
-//     }
-//     processedTxnsFlat[txn.hash] = txn;
-//   }
-//   setTransactions(processedTxns);
-//   setTransactionsMap(processedTxnsFlat);
-// }

@@ -68,7 +68,9 @@ function Home() {
       </Head>
       <VStack className={styles.titleContainer}>
         <Text className={styles.title}>TELESCOPE</Text>
-        <Text className={styles.subtitle}>Ethereum Transaction Explorer</Text>
+        <Text className={styles.subtitle}>
+          EVM Cross-Chain Transaction Explorer
+        </Text>
         <Searchbar
           handleSwitchChange={() => {
             setIsGraphView(!isGraphView);

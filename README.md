@@ -28,7 +28,7 @@ Visualization of token and NFT transfers to better track movement of funds
 
 Data-piping and making shrewd UX decisions were the biggest challenge in this project.
 
-For instance, Etherscan's API doesn't conveniently return all of a user's ERC20/ERC721 transfer, so I had to rely on Alchemy's API for those. As a result, I needed to build out an entire data processing layer in order to standardized the two outputs from the respective API's, which was not a very fun job :/ But as a result of the hard work, I was able to successfully show an aggregate transaction history for users!
+I used QuickNode's Token API to fetch user balances and Covalent's Transaction API for the history. To use these, I needed to build out an entire data processing layer in order to standardized the outputs from the respective API's, which was not a very fun job :/ But as a result of the hard work, I was able to successfully show an aggregate transaction history for users!
 
 For UX, I had to think from scratch how to (1) best visualize accounts and (2) think deeply about how to surface the most important high-level transaction details and how to best showcase the advanced details as well.
 
@@ -43,5 +43,5 @@ Unfortunately I had to leave a lot of the features at the "proof of concept" sta
 - NextJS
 - Chakra UI
 - QuickNode Token API
-- Covalent Transactions API
+- Covalent Token and Transactions API
 - react-force-graph
