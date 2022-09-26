@@ -201,6 +201,78 @@ function Overview({ address }: any) {
       setIsLoading(false);
     }
     fetchPolygonBalances();
+
+    async function fetchOptimismBalances() {
+      if (!isAddress(address as string)) return;
+      const url = `https://api.covalenthq.com/v1/10/address/${address}/balances_v2/?key=${NEXT_PUBLIC_COVALENY_API_KEY}`;
+      const response = await fetch(url);
+      const data = await response.json();
+      const tokenBalances = data.data.items;
+
+      for (let i = 0; i < tokenBalances.length; i++) {
+        const token = tokenBalances[i];
+        token.formattedBalance = formatUnits(
+          token.balance,
+          token.contract_decimals
+        );
+        token.network = "polygon";
+        token.label = token.contract_ticker_symbol;
+        token.value = Number(token.quote);
+        token.color = polygonGradient[i];
+      }
+
+      const filteredTokenBalance = tokenBalances.filter(
+        (token: any) => token.quote > 0.1
+      );
+
+      const aggregateBalance = filteredTokenBalance.reduce(
+        (acc: number, token: any) => acc + token.quote,
+        0
+      );
+
+      setTokenBalances((prev) =>
+        [...prev, ...filteredTokenBalance].sort((a, b) => b.quote - a.quote)
+      );
+      setTotalBalance((prev) => prev + aggregateBalance);
+      setIsLoading(false);
+    }
+    fetchOptimismBalances();
+
+    async function fetchAuroraBalances() {
+      if (!isAddress(address as string)) return;
+      const url = `https://api.covalenthq.com/v1/1313161554/address/${address}/balances_v2/?key=${NEXT_PUBLIC_COVALENY_API_KEY}`;
+      const response = await fetch(url);
+      const data = await response.json();
+      const tokenBalances = data.data.items;
+
+      for (let i = 0; i < tokenBalances.length; i++) {
+        const token = tokenBalances[i];
+        token.formattedBalance = formatUnits(
+          token.balance,
+          token.contract_decimals
+        );
+        token.network = "polygon";
+        token.label = token.contract_ticker_symbol;
+        token.value = Number(token.quote);
+        token.color = polygonGradient[i];
+      }
+
+      const filteredTokenBalance = tokenBalances.filter(
+        (token: any) => token.quote > 0.1
+      );
+
+      const aggregateBalance = filteredTokenBalance.reduce(
+        (acc: number, token: any) => acc + token.quote,
+        0
+      );
+
+      setTokenBalances((prev) =>
+        [...prev, ...filteredTokenBalance].sort((a, b) => b.quote - a.quote)
+      );
+      setTotalBalance((prev) => prev + aggregateBalance);
+      setIsLoading(false);
+    }
+    fetchAuroraBalances();
   }, [address]);
 
   tokenBalances.forEach((token: any) => {
@@ -395,6 +467,42 @@ function Transactions({ address }: any) {
       processTransactions(txns);
     }
     fetchMainnetTransactions();
+
+    async function fetchPolygonTransactions() {
+      if (!isAddress(address as string)) return;
+      const url = `https://api.covalenthq.com/v1/137/address/${address}/transactions_v2/?quote-currency=USD&format=JSON&block-signed-at-asc=false&no-logs=false&page-number=1&page-size=50&key=${NEXT_PUBLIC_COVALENY_API_KEY}`;
+      const response = await fetch(url);
+      const data = await response.json();
+
+      const txns = data.data.items;
+
+      processTransactions(txns);
+    }
+    fetchPolygonTransactions();
+
+    async function fetchOptimismTransactions() {
+      if (!isAddress(address as string)) return;
+      const url = `https://api.covalenthq.com/v1/10/address/${address}/transactions_v2/?quote-currency=USD&format=JSON&block-signed-at-asc=false&no-logs=false&page-number=1&page-size=50&key=${NEXT_PUBLIC_COVALENY_API_KEY}`;
+      const response = await fetch(url);
+      const data = await response.json();
+
+      const txns = data.data.items;
+
+      processTransactions(txns);
+    }
+    fetchOptimismTransactions();
+
+    async function fetchAuroraTransactions() {
+      if (!isAddress(address as string)) return;
+      const url = `https://api.covalenthq.com/v1/1313161554/address/${address}/transactions_v2/?quote-currency=USD&format=JSON&block-signed-at-asc=false&no-logs=false&page-number=1&page-size=50&key=${NEXT_PUBLIC_COVALENY_API_KEY}`;
+      const response = await fetch(url);
+      const data = await response.json();
+
+      const txns = data.data.items;
+
+      processTransactions(txns);
+    }
+    fetchAuroraTransactions();
   }, [address]);
 
   useEffect(() => {
